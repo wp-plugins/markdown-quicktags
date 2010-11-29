@@ -113,7 +113,7 @@ Bound to Command/Control-Z and Shift-Command/Control-Z, undo and redo stacks wil
 
 == Frequently Asked Questions ==
 
-= What's Markdown =
+= What's Markdown? =
 
 Created by John Gruber, Markdown is a simple, plain-text language for easily creating HTML. See the original project page for [syntax and documentation](http://daringfireball.net/projects/markdown/syntax).
 
