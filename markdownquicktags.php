@@ -3,7 +3,7 @@
 Plugin Name: Markdown QuickTags
 Plugin URI: http://brettterpstra.com/code/markdown-quicktags/
 Description: Replaces the WordPress QuickTags with Markdown-compatible ones
-Version: 0.7
+Version: 0.7.1
 Author: Brett Terpstra
 Author URI: http://brettterpstra.com
 
@@ -103,13 +103,13 @@ class MarkdownQuickTags {
 		  wp_enqueue_script('jquery-ui-dialog');
       wp_enqueue_script('farbtastic');
       wp_deregister_script('quicktags');
-      wp_register_script('quicktags', $this->js_path.'quicktags.jquery.js', false, array('jquery','jquery-ui-dialog','jquery-ui-core','mdqt_tabor','mdqt_textchange','mdqt_atools','mdqt_asuggest','mdqt_hoverintent','mdqt_tipsy'), true);
-      wp_enqueue_script('mdqt_textchange',$this->js_path.'textchange.jquery.js', false, array('jquery'), true);
-      wp_enqueue_script('mdqt_atools',$this->js_path.'jquery.a-tools.min.js', false, array('jquery'), true);
-      wp_enqueue_script('mdqt_asuggest',$this->js_path.'jquery.asuggest.js', false, array('jquery'), true);
-      wp_enqueue_script('mdqt_hoverintent',$this->js_path.'jquery.hoverIntent.min.js', false, array('jquery'), true);
-      wp_enqueue_script('mdqt_tabor',$this->js_path.'taboverride.js', false, array('jquery'), true);
-      wp_enqueue_script('mdqt_tipsy',$this->js_path.'jquery.tipsy.js', false, array('jquery'), true);
+      wp_register_script('quicktags', $this->js_path.'quicktags.jquery.js', array('jquery','jquery-ui-dialog','jquery-ui-core','mdqt_tabor','mdqt_textchange','mdqt_atools','mdqt_asuggest','mdqt_hoverintent','mdqt_tipsy'), true);
+      wp_enqueue_script('mdqt_textchange',$this->js_path.'textchange.jquery.js', false, array('jquery'), false);
+      wp_enqueue_script('mdqt_atools',$this->js_path.'jquery.a-tools.min.js', false, array('jquery'), false);
+      wp_enqueue_script('mdqt_asuggest',$this->js_path.'jquery.asuggest.js', false, array('jquery'), false);
+      wp_enqueue_script('mdqt_hoverintent',$this->js_path.'jquery.hoverIntent.min.js', false, array('jquery'), false);
+      wp_enqueue_script('mdqt_tabor',$this->js_path.'taboverride.js', false, array('jquery'), false);
+      wp_enqueue_script('mdqt_tipsy',$this->js_path.'jquery.tipsy.js', false, array('jquery'), false);
     }
 	}
 	
