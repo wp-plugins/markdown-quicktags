@@ -219,26 +219,6 @@
             return false;
           }).appendTo($('#ed_button_container'));
 
-          $('<form id="urlpaste" title="Paste text with one or more urls in it..."/>').css({display:'none',textAlign:'center'}).append($('<textarea />')).appendTo($('#ed_toolbar'));
-          $( "#urlpaste" ).dialog({
-      			autoOpen: false,
-      			height: 400,
-      			width: 500,
-      			modal: true,
-      			draggable: true,
-      			resizable: false,
-      			buttons: {
-      				"Paste links": function() {
-      					$( this ).dialog( "close" );
-      					base.$el.makeRefs($(this).children('textarea').val());
-      					$(this).children('textarea').val('');
-      				},
-      				Cancel: function() {
-      					$( this ).dialog( "close" );
-      				}
-      			}
-      		});
-
           if (options.showlookup)
             $('#ed_button_container').append('<input type="button" id="ed_spell" class="ed_button" onclick="edSpell(edCanvas);" title="' + 'Dictionary lookup' + '" value="' + 'lookup' + '" />');
           // document.write('<input type="button" id="ed_close" class="ed_button" onclick="edCloseAllTags();" title="' + 'Close all open tags' + '" value="' + 'close all' + '" />');
@@ -259,6 +239,24 @@
               }, 100);
             }
           });
+          $('<form id="urlpaste" title="Paste text with one or more urls in it..."/>').css({display:'none',textAlign:'center'}).append($('<textarea />')).appendTo($('#ed_toolbar')).dialog({
+      			autoOpen: false,
+      			height: 400,
+      			width: 500,
+      			modal: true,
+      			draggable: true,
+      			resizable: false,
+      			buttons: {
+      				"Paste links": function() {
+      					$( this ).dialog( "close" );
+      					base.$el.makeRefs($(this).children('textarea').val());
+      					$(this).children('textarea').val('');
+      				},
+      				Cancel: function() {
+      					$( this ).dialog( "close" );
+      				}
+      			}
+      		});
           base.$el.bindKeys();
           base.$el.takeSnapshot(base.$el.val(),1);
           $('#mdqt_loader').fadeOut('fast');
