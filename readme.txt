@@ -154,6 +154,9 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 = 0.7 =
 * Initial Release
 
+= 0.7.2 =
+* Fixes for script dependency and load order
+
 == Upgrade Notice ==
 
 = 0.7 =
