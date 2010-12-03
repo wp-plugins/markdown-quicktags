@@ -11,7 +11,7 @@
         snapshotsFwd = new Array(),
         tabsize,
         snaptimer, snaptimeout, undoing = false;
-    $.mdqt.quicktags = function(el, options){
+    $.mdqt.quicktags = function(el, options) {
         // To avoid scope issues, use 'base' instead of 'this'
         // to reference this class from internal events and functions.
         var base = this;
@@ -277,7 +277,7 @@
         var sel = mdqt_getSelection(c);
         var newcontent = sel ? pair[0]+sel+pair[1] : pair.join('');
         var newcaret = sel ? caret + newcontent.length : caret + 1;
-        $(this).edInsertContent(c,newcontent);
+        $(this).insertContent(c,newcontent);
         if (pair[0].length > 1) {
           mdqt_setSelection(c,caret+1,caret+pair[0].length);
         } else {
@@ -390,7 +390,7 @@
                   if (nextchar == thechar) {
                     setCaret(base.el,caret + 1);
                   } else {
-                    base.$el.edInsertContent(base.el,thechar);
+                    base.$el.insertContent(base.el,thechar);
                   }
                   return false;
                 }
@@ -448,7 +448,7 @@
                 var total = 0;
                 if (/\n/.test(prevchar)) {
                   ev.preventDefault();
-                  base.$el.edInsertContent(base.el,"\n");
+                  base.$el.insertContent(base.el,"\n");
                   return false;
                 }
                 if (ev.metaKey) {
@@ -694,7 +694,7 @@
             a;
             a = '[' + edLinks[c].display + '](' + edLinks[c].URL + ")";
             d.selectedIndex = 0;
-            $(this).edInsertContent(edCanvas, a);
+            $(this).insertContent(edCanvas, a);
         } else {
             d.selectedIndex = 0;
         }
@@ -778,7 +778,7 @@
             }
         }
     };
-    $.fn.edInsertContent = function(d, c) {
+    $.fn.insertContent = function(d, c) {
         var e,
         b,
         a,
@@ -837,7 +837,7 @@
             parts.pop();
             var def = parts.join('.');
             a = '![' + prompt('Enter image description', def) + '](' + a + ')';
-            $(this).edInsertContent(b, a);
+            $(this).insertContent(b, a);
         }
     };
     
@@ -939,7 +939,7 @@
         var nextchar = d.value.substring(caret,caret+1);
         var prevchar = d.value.substring(caret,caret-1);
         if (nextchar == ']' && prevchar == '[') {
-          $(this).edInsertContent(d,a);
+          $(this).insertContent(d,a);
         } else {
           var linktext = prompt('Link text','');
           if (linktext == null)
@@ -994,7 +994,7 @@
             if (!title)
               title = prompt('Reference Title','') || '';
             var out = '[' + title + ']: ' + url;
-            $(this).edInsertContent(d, out);
+            $(this).insertContent(d, out);
           }
         } else {
           $(this).edInsertTag(d, c);
@@ -1183,7 +1183,7 @@
       	  output.push('['+name+']: '+goodurls[i]);
       	}
       	var res = output.sort();      	
-        $(this).edInsertContent(d,res.join("\n"));
+        $(this).insertContent(d,res.join("\n"));
         var firstName = /\[([^\]]+)\]/.exec(res[0])[1];
         mdqt_setSelection(d,currPos,currPos+firstName.length);
         return true;
@@ -1214,4 +1214,7 @@ function edToolbar() {
     jQuery('#content').mdqt_quicktags(json);
   });
 }  
+function edInsertContent(el,text) {
+  jQuery(edCanvas).data('mdqt.quicktags').$el.insertContent(el,text);
+}
 

@@ -80,12 +80,15 @@ class MarkdownQuickTags {
     wp_register_style( 'peppergrinder', $this->css_path . 'peppergrinder.css');
     
     // wp_register_style( 'nobile', 'http://fonts.googleapis.com/css?family=Nobile:regular&subset=latin');
-    function mdqt_image_tag($html, $id , $alt, $title) {
-      preg_match('/src="(.*?)"/', $html, $matches, PREG_OFFSET_CAPTURE);
-      $imgurl = $matches[1][0];
-      $html = "![$title]($imgurl \"$alt\")";
-      return $html;
-    }
+
+    // Maybe someday, if I get balsy:
+    //
+    // function mdqt_image_tag($html, $id , $alt, $title) {
+    //   preg_match('/src="(.*?)"/', $html, $matches, PREG_OFFSET_CAPTURE);
+    //   $imgurl = $matches[1][0];
+    //   $html = "![$title]($imgurl \"$alt\")";
+    //   return $html;
+    // }
     // add_filter('get_image_tag','mdqt_image_tag',10,4);
   }
 
