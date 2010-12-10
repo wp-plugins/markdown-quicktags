@@ -2,7 +2,7 @@
 Tags: markdown, editor, quicktags
 Requires at least: 3.0
 Contributors: ttscoff
-Tested up to: 3.1
+Tested up to: 3.0.3
 Stable tag: 0.7.4
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
@@ -24,7 +24,7 @@ This is currently very beta, and has only been tested on **Wordpress 3.0+**, and
 
 - - -
 
-#### Overview
+#### Overview ###
 
 The editor looks a little different, but if you know how to type, you're
 already halfway to being a Markdown master. There are some familiar
@@ -86,7 +86,9 @@ Snapshots are saved when most buttons are pressed, when text changes are
 detected, or large edits are made (such as rendering or running
 'markdownify' on the document). The Revert button will momentarily flash green when a snapshot is saved.
 
-#### Typing in the editor ####
+- - -
+
+**Typing in the editor**
 
 There are quite a few features in the editor that will manifest themselves as you type. 
 
@@ -118,7 +120,9 @@ Pressing Command-Enter or Control-Enter will skip to the next line without break
 
 Bound to Command/Control-Z and Shift-Command/Control-Z, undo and redo stacks will allow up to 100 steps and track all text changes, including copy/paste.
 
-#### Donate! ####
+- - -
+
+**Donate!**
 
 Like what you see happening here? Want to help make more of it happen?
 Take a second and [donate a little to the developer](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ).
@@ -160,6 +164,10 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 = 0.7.3 =
 * Fix for image/media insertion, now inserts at cursor instead of end of document. Thanks to @khaled for catching that one.
 
+= 0.7.4 =
+* Switched to LABjs for loading most of the external javascript. Seems to have stemmed the occasional problem where the loading spinner would just keep spinning after a javascript error.
+* Modified script loading function to only fire on post/page edit pages. A lot less extraneous JavaScript floating around in the rest of your admin now.
+
 == Upgrade Notice ==
 
 = 0.7 =
@@ -172,4 +180,4 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 * Important fix for image/media insertion at cursor
 
 = 0.7.4 =
-* Switched to LABjs for loading most of the external javascript. Seems to have stemmed the occasional problem where the loading spinner would just keep spinning after a javascript error.
+* This update should cure the issue where the loading spinner gets stuck on page load.
