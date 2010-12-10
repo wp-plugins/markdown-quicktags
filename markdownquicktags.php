@@ -3,7 +3,7 @@
 Plugin Name: Markdown QuickTags
 Plugin URI: http://brettterpstra.com/code/markdown-quicktags/
 Description: Replaces the WordPress QuickTags with Markdown-compatible ones
-Version: 0.7.4
+Version: 0.7.5
 Author: Brett Terpstra
 Author URI: http://brettterpstra.com
 
@@ -78,27 +78,14 @@ class MarkdownQuickTags {
   function mdqt_admin_init() {
     wp_register_style( 'mdqt_style', $this->css_path . 'mdqt_style.css' );
     wp_register_style( 'peppergrinder', $this->css_path . 'peppergrinder.css');
-    
-    // wp_register_style( 'nobile', 'http://fonts.googleapis.com/css?family=Nobile:regular&subset=latin');
-
-    // Maybe someday, if I get balsy:
-    //
-    // function mdqt_image_tag($html, $id , $alt, $title) {
-    //   preg_match('/src="(.*?)"/', $html, $matches, PREG_OFFSET_CAPTURE);
-    //   $imgurl = $matches[1][0];
-    //   $html = "![$title]($imgurl \"$alt\")";
-    //   return $html;
-    // }
-    // add_filter('get_image_tag','mdqt_image_tag',10,4);
   }
 
   function mdqt_admin_styles() {
     wp_enqueue_style( 'mdqt_style' );
-    wp_enqueue_style( 'farbtastic' );
     wp_enqueue_style( 'peppergrinder' );
-    // wp_enqueue_style( 'nobile' );
   }
-	
+
+
 	function js_libs() {
 		global $pagenow, $typenow;
     if (is_admin() && ($pagenow=='post-new.php' || $pagenow=='post.php')) {
@@ -176,9 +163,20 @@ class MarkdownQuickTags {
 add_action('admin_menu', 'mdqt_create_menu');
 
 function mdqt_create_menu() {
-	add_submenu_page('options-general.php','Markdown QuickTags Settings', 'Markdown QuickTags', 'administrator', __FILE__, 'mdqt_settings_page');
-	add_action( 'admin_init', 'register_mdqt_settings' );
+	$hook = add_submenu_page('options-general.php','Markdown QuickTags Settings', 'Markdown QuickTags', 'administrator', __FILE__, 'mdqt_settings_page');
+  add_action( 'admin_init', 'register_mdqt_settings' );
+  add_action( 'admin_print_scripts-'.$hook, 'mdqt_options_scripts');
+  add_action( 'admin_print_styles-'.$hook, 'mdqt_options_styles');
 }
+
+function mdqt_options_styles() {
+  wp_enqueue_style( 'farbtastic' );
+}
+
+function mdqt_options_scripts() {
+  wp_enqueue_script( 'farbtastic' );
+}
+
 
 function register_mdqt_settings() {
 	//register our settings
