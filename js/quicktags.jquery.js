@@ -1,7 +1,7 @@
 (function($){
     if(!$.mdqt){
         $.mdqt = new Object();
-    };
+    }
         var edButtons = new Array(),
         edLinks = new Array(),
         edOpenTags = new Array(),
@@ -170,7 +170,9 @@
                     $('#preview').height($('div.postarea').height() - 135).fadeIn();
                   $('#mdqt_loader').fadeOut('fast');
                   $('#editorcontainer').height('auto');
+
                 },"json");
+
               });      
             } else {
               $('#preview').stop(true,true).hide();
@@ -186,9 +188,7 @@
             e.preventDefault();
             if (!$(this).hasClass('activeutil')) {      
               $(this).addClass('activeutil');
-              $('<div id="fullscreenoverlay" />')
-                .css({'display':'none','background':options.fullscreenbg,'opacity':options.fullscreenbgopacity})
-                .insertBefore($('div.postarea')).fadeIn();
+              $('<div id="fullscreenoverlay" />').css({'display':'none','background':options.fullscreenbg,'opacity':options.fullscreenbgopacity}).insertBefore($('div.postarea')).fadeIn();
               $('div.postarea').height('100%').fadeOut('fast',function(){
                 $('body').css('overflow','hidden');
                 var marginleft = options.fullscreenwidth / 2;
@@ -197,7 +197,9 @@
                     $('div.supermarkdowneditoraway #utils').hide();
 
                   $('#content,#preview').css('height',$('div.postarea').height() - 95);
+
                 });
+
               });
               $(window).resize(function() {
                 $('div.postarea').height('100%');
@@ -296,12 +298,12 @@
             nextchar = base.el.value.substring(caret,caret+1),
             prevchar = base.el.value.substring(caret,caret-1),
             contents,before,after,match;
-            if (completing == false && prevchar == '[' && nextchar == ']') {
+            if (completing === false && prevchar == '[' && nextchar == ']') {
               if (base.el.value.substring(caret-1,caret-2) == ']') {
                 $(this).unbind('keydown').unbind('keyup').createSuggest();
                 return true;
               }
-            } else if (completing == true && nextchar !== ']'){
+            } else if (completing === true && nextchar !== ']'){
               completing = false;
               $(this).bindKeys();
               return true;
@@ -512,12 +514,15 @@
                 }
                 return true;
               break;
+              default:
+                return true;
+              break;
             }
             return true;
           }).tabOverride();
     };
     function getSelectionCoord(el) {
-      if (el.selectionStart || el.selectionStart == 0) {
+      if (el.selectionStart || el.selectionStart === 0) {
           a = el.selectionStart;
           b = el.selectionEnd;
           if (b != a) {
@@ -561,7 +566,7 @@
           el.focus(); 
 
           var r = document.selection.createRange(); 
-          if (r == null) { 
+          if (r === null) { 
             return 0; 
           } 
 
@@ -654,7 +659,7 @@
       return false;
     }
     function edAddTag(a) {
-        if (edButtons[a].tagEnd != "") {
+       if (edButtons[a].tagEnd !== "") {
             edOpenTags[edOpenTags.length] = a;
             document.getElementById(edButtons[a].id).value = "/" + document.getElementById(edButtons[a].id).value;
         }
@@ -719,7 +724,7 @@
                 }
             }
         }
-        if (e == "") {
+        if (e === "") {
             e = prompt('Enter a word to look up:', "");
         }
         if (e !== null && (/^\w[\w ]*$/).test(e)) {
@@ -733,7 +738,7 @@
             if (e.text.length > 0) {
                 e.text = edButtons[c].tagStart + e.text + edButtons[c].tagEnd;
             } else {
-                if (!edCheckOpenTags(c) || edButtons[c].tagEnd == "") {
+                if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
                     e.text = edButtons[c].tagStart;
                     edAddTag(c);
                 } else {
@@ -752,7 +757,7 @@
                     d.value = d.value.substring(0, b) + edButtons[c].tagStart + d.value.substring(b, a) + edButtons[c].tagEnd + d.value.substring(a, d.value.length);
                     g += edButtons[c].tagStart.length + edButtons[c].tagEnd.length;
                 } else {
-                    if (!edCheckOpenTags(c) || edButtons[c].tagEnd == "") {
+                    if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
                         d.value = d.value.substring(0, b) + edButtons[c].tagStart + d.value.substring(a, d.value.length);
                         edAddTag(c);
                         g = b + edButtons[c].tagStart.length;
@@ -767,7 +772,7 @@
                 d.selectionEnd = g;
                 d.scrollTop = f;
             } else {
-                if (!edCheckOpenTags(c) || edButtons[c].tagEnd == "") {
+                if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
                     d.value += edButtons[c].tagStart;
                     edAddTag(c);
                 } else {
@@ -916,7 +921,7 @@
                 a = $(this).val();            
                 $('#reflinkwrap').slideUp('fast',function(){ 
                   $(this).remove(); 
-                  if (a != "")
+                  if (a !== "")
                     edInsertRefLinkCallback(a,d,c,b);
                 });
               });
@@ -942,7 +947,7 @@
           $(this).insertContent(d,a);
         } else {
           var linktext = prompt('Link text','');
-          if (linktext == null)
+          if (linktext === null)
             return;
           edButtons[c].tagStart = '[' + linktext + '][' + a + ']';
           edButtons[c].tagEnd = '';
@@ -1036,18 +1041,18 @@
               lines[l] = lines[l].replace(/^(\s*)\d\. (.*)/,"$1* $2");
             } else if (/^\s*[^\*\-\+]/.test(lines[l])) {
               lines[l] = lines[l].replace(/(\s*)(.*)/,"$1* $2");
-            } else if (/^\s*(\* )/.test(lines[l])) {
+            } // else if (/^\s*(\* )/.test(lines[l])) {
               // lines[l] = lines[l].replace(/(\s*)\* (.*)/,"$1$2");
-            }
+            // }
           } else {
             counter++;
             if (/^\s*[\*\-\+] /.test(lines[l])) {
               lines[l] = lines[l].replace(/(\s*)[\*\-\+] (.*)/,"$1"+counter+". $2");
             } else if (/^\s*[^(\d\. )]/.test(lines[l])) {
               lines[l] = lines[l].replace(/(\s*)(.*)/,"$1"+counter+". $2");
-            } else if (/^\s*(\d\. )/.test(lines[l])) {
+            } // else if (/^\s*(\d\. )/.test(lines[l])) {
               // lines[l] = lines[l].replace(/(\s*)\d\. (.*)/,"$1$2");
-            }
+            // }
             holdcounter = counter;
           }
         } else if (lineIndent < indent) {
@@ -1078,7 +1083,7 @@
             if (e.text.length > 0) {
                 e.text = process_list(e.text,type);
             } else {
-                if (!edCheckOpenTags(c) || edButtons[c].tagEnd == "") {
+                if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
                     e.text = edButtons[c].tagStart;
                     edAddTag(c);
                 } else {
@@ -1100,7 +1105,7 @@
                     g += edButtons[c].tagStart.length + edButtons[c].tagEnd.length;
                 } else {
                     caret = $(d).getCaret();
-                    if (!edCheckOpenTags(c) || edButtons[c].tagEnd == "") {
+                    if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
                         d.value = d.value.substring(0, b) + edButtons[c].tagStart + d.value.substring(a, d.value.length);
                         edAddTag(c);
                         g = b + edButtons[c].tagStart.length;
@@ -1118,7 +1123,7 @@
                 d.scrollTop = f;
             } else {
                 caret = $(this).getCaret();
-                if (!edCheckOpenTags(c) || edButtons[c].tagEnd == "") {
+                if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
                     d.value += edButtons[c].tagStart;
                     edAddTag(c);
                 } else {
@@ -1135,7 +1140,11 @@
     };
     var uniquenames = new Array();
     function contains(a, e) {
-    	for(j=0;j<a.length;j++){if(a[j]==e){return true;}};
+    	for(j=0;j<a.length;j++) {
+        if(a[j]==e) {
+          return true;
+        }
+      }
     	return false;
     }
     function unique(a) {
@@ -1147,7 +1156,7 @@
     		}
     	}
     	return tmp;
-    };
+    }
     function uniquename(name,i) {
       if (contains(uniquenames,name)) {
         i++;
@@ -1209,9 +1218,18 @@
 })(jQuery);
 
 function edToolbar() {
-  jQuery('#quicktags').append(jQuery('<div id="ed_toolbar" />').append(jQuery('<div id="ed_button_container" />')));
-  jQuery.getJSON(ajaxurl,{action:'mdqt_options'},function(json){
-    jQuery('#content').mdqt_quicktags(json);
+  $LAB.setOptions({ AlwaysPreserveOrder:true });
+  $LAB
+  .script('/wp-content/plugins/markdown-quicktags/js/jquery.a-tools.min.js')
+  .script('/wp-content/plugins/markdown-quicktags/js/jquery.asuggest.js') 
+  .script('/wp-content/plugins/markdown-quicktags/js/jquery.hoverIntent.min.js')
+  .script('/wp-content/plugins/markdown-quicktags/js/taboverride.js')
+  .script('/wp-content/plugins/markdown-quicktags/js/jquery.tipsy.js')
+  .script('/wp-content/plugins/markdown-quicktags/js/textchange.jquery.js').wait(function() { 
+    jQuery('#quicktags').append(jQuery('<div id="ed_toolbar" />').append(jQuery('<div id="ed_button_container" />')));
+    jQuery.getJSON(ajaxurl,{action:'mdqt_options'},function(json){
+      jQuery('#content').mdqt_quicktags(json);
+    });
   });
 }  
 function edInsertContent(el,text) {

@@ -3,7 +3,7 @@
 Plugin Name: Markdown QuickTags
 Plugin URI: http://brettterpstra.com/code/markdown-quicktags/
 Description: Replaces the WordPress QuickTags with Markdown-compatible ones
-Version: 0.7.3
+Version: 0.7.4
 Author: Brett Terpstra
 Author URI: http://brettterpstra.com
 
@@ -100,19 +100,16 @@ class MarkdownQuickTags {
   }
 	
 	function js_libs() {
-		if ( is_admin() ) {
-		  wp_enqueue_script('jquery');
-		  wp_enqueue_script('jquery-ui-core');
-		  wp_enqueue_script('jquery-ui-dialog');
-      wp_enqueue_script('farbtastic');
-      wp_deregister_script('quicktags');
-      wp_register_script('quicktags', $this->js_path.'quicktags.jquery.js', array('jquery','jquery-ui-dialog','jquery-ui-core','mdqt_tabor','mdqt_textchange','mdqt_atools','mdqt_asuggest','mdqt_hoverintent','mdqt_tipsy'), true);
-      wp_enqueue_script('mdqt_textchange',$this->js_path.'textchange.jquery.js', array('jquery'), null, false);
-      wp_enqueue_script('mdqt_atools',$this->js_path.'jquery.a-tools.min.js', array('jquery'), null, false);
-      wp_enqueue_script('mdqt_asuggest',$this->js_path.'jquery.asuggest.js', array('jquery'), null, false);
-      wp_enqueue_script('mdqt_hoverintent',$this->js_path.'jquery.hoverIntent.min.js', array('jquery'), null, false);
-      wp_enqueue_script('mdqt_tabor',$this->js_path.'taboverride.js', array('jquery'), null, false);
-      wp_enqueue_script('mdqt_tipsy',$this->js_path.'jquery.tipsy.js', array('jquery'), null, false);
+		global $pagenow, $typenow;
+    if (is_admin() && ($pagenow=='post-new.php' || $pagenow=='post.php')) {
+
+		  wp_deregister_script('quicktags');
+      wp_enqueue_script('jquery');
+      wp_enqueue_script('jquery-ui-core');
+      wp_enqueue_script('jquery-ui-dialog');
+
+      wp_enqueue_script('labjs',$this->js_path.'LAB.js', array(), null, false);
+      wp_enqueue_script('mdqt',$this->js_path.'quicktags.jquery.js', array(), null, false);
     }
 	}
 	
