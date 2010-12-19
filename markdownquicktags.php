@@ -1,26 +1,32 @@
 <?php
+/**
+ * @package Markdown QuickTags
+ */
 /*
 Plugin Name: Markdown QuickTags
-Plugin URI: http://brettterpstra.com/code/markdown-quicktags/
+Plugin URI: http://brettterpstra.com/code/markdown-quicktags
 Description: Replaces the WordPress QuickTags with Markdown-compatible ones
-Version: 0.7.5
+Version: 0.7.7
 Author: Brett Terpstra
 Author URI: http://brettterpstra.com
+License: GPLv2
+*/
 
-    Copyright 2010  Brett Terpstra  (email : me@brettterpstra.com)
+/*
+Copyright 2010  Brett Terpstra  (email : me@brettterpstra.com)
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License, version 2, as 
-    published by the Free Software Foundation.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License, version 2, as 
+published by the Free Software Foundation.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 if ( !function_exists ('add_action') ) {
@@ -53,13 +59,16 @@ class MarkdownQuickTags {
 		$this->siteurl = $this->trailingslashit(get_option('siteurl'));;
 		$this->js_path =  $this->siteurl . "wp-content/plugins/$plugin_dir/js/";
     $this->css_path =  $this->siteurl . "wp-content/plugins/$plugin_dir/css/";
-    
-		add_action( 'admin_print_scripts', array(&$this, 'js_libs' ));
-		add_action( 'wp_ajax_markdownify', array(&$this, 'markdownify' ));
-		add_action( 'wp_ajax_markdown', array(&$this, 'markdown' ));
-		add_action( 'wp_ajax_mdqt_options', array(&$this, 'getoptions' ));
-		add_action( 'admin_init', array(&$this, 'mdqt_admin_init' ));
-    add_action( 'admin_print_styles', array(&$this, 'mdqt_admin_styles' ) );
+    global $pagenow, $typenow;
+    if (is_admin() && ($pagenow=='post-new.php' || $pagenow=='post.php')) {
+  		add_action( 'admin_print_scripts', array(&$this, 'js_libs' ));
+  		add_action( 'wp_ajax_markdownify', array(&$this, 'markdownify' ));
+  		add_action( 'wp_ajax_markdown', array(&$this, 'markdown' ));
+  		add_action( 'wp_ajax_mdqt_options', array(&$this, 'getoptions' ));
+
+  		add_action( 'admin_init', array(&$this, 'mdqt_admin_init' ));
+      add_action( 'admin_print_styles', array(&$this, 'mdqt_admin_styles' ) );    
+    }
     register_activation_hook(__FILE__, array(&$this, 'mdqt_activation_function' ));
 	}
 	
@@ -87,17 +96,12 @@ class MarkdownQuickTags {
 
 
 	function js_libs() {
-		global $pagenow, $typenow;
-    if (is_admin() && ($pagenow=='post-new.php' || $pagenow=='post.php')) {
-
 		  wp_deregister_script('quicktags');
       wp_enqueue_script('jquery');
       wp_enqueue_script('jquery-ui-core');
       wp_enqueue_script('jquery-ui-dialog');
-
       wp_enqueue_script('labjs',$this->js_path.'LAB.js', array(), null, false);
-      wp_enqueue_script('mdqt',$this->js_path.'quicktags.jquery.js', array(), null, false);
-    }
+      wp_enqueue_script('mdqt',$this->js_path.'quicktags.jquery.js.php', array(), null, false);
 	}
 	
 	function markdownify() {

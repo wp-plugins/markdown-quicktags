@@ -3,7 +3,7 @@ Tags: markdown, editor, quicktags
 Requires at least: 3.0
 Contributors: ttscoff
 Tested up to: 3.0.3
-Stable tag: 0.7.5
+Stable tag: 0.7.7
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
 Replaces the HTML editor with a Markdown one. Extensive Markdown features and can render to HTML. Full-screen editing, configurable fonts and more.
@@ -171,6 +171,10 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 = 0.7.5 =
 * Quick fix for loading the colorpicker, "farbtastic" only on the options page.
 
+= 0.7.7 =
+* Fix for plugin not loading on blogs where WordPress is in a subdirectory.
+* More careful about automatic pairing if there's a character to the immediate right of the cursor.
+
 == Upgrade Notice ==
 
 = 0.7 =
@@ -187,3 +191,6 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 
 = 0.7.5 =
 * Quick fix to make the colorpicker show up on the options page again
+
+= 0.7.7 =
+* This release is a fix for the plugin not loading on blogs where WordPress is in a subdirectory.
