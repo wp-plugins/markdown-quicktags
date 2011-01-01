@@ -1244,3 +1244,6 @@ function edInsertContent(el,text) {
   jQuery(edCanvas).data('mdqt.quicktags').$el.insertContent(el,text);
 }
 
+function edCloseAllTags() {
+  return true;
+}
