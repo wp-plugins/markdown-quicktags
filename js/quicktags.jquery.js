@@ -365,9 +365,13 @@
                       }
                     }
                   }
-                  ev.preventDefault();
-                  insertPair(base.el,pair);
-                  return false;
+                  if (/\S/.test(nextchar) && !mdqt_getSelection(base.el)) {
+                    return true;
+                  } else {
+                    ev.preventDefault();
+                    insertPair(base.el,pair);
+                    return false;
+                  }
                 }
                 break;
               case 221: // ]
@@ -1218,17 +1222,21 @@
 })(jQuery);
 
 function edToolbar() {
-  $LAB.setOptions({ AlwaysPreserveOrder:true });
-  $LAB
-  .script('/wp-content/plugins/markdown-quicktags/js/jquery.a-tools.min.js')
-  .script('/wp-content/plugins/markdown-quicktags/js/jquery.asuggest.js') 
-  .script('/wp-content/plugins/markdown-quicktags/js/jquery.hoverIntent.min.js')
-  .script('/wp-content/plugins/markdown-quicktags/js/taboverride.js')
-  .script('/wp-content/plugins/markdown-quicktags/js/jquery.tipsy.js')
-  .script('/wp-content/plugins/markdown-quicktags/js/textchange.jquery.js').wait(function() { 
-    jQuery('#quicktags').append(jQuery('<div id="ed_toolbar" />').append(jQuery('<div id="ed_button_container" />')));
-    jQuery.getJSON(ajaxurl,{action:'mdqt_options'},function(json){
-      jQuery('#content').mdqt_quicktags(json);
+  var mdqtdir;
+  jQuery.getJSON(ajaxurl,{action:'mdqtdir'},function(json){
+    mdqtdir = unescape(json);  
+    $LAB.setOptions({ AlwaysPreserveOrder:true });
+    $LAB
+    .script(mdqtdir+'jquery.a-tools.min.js')
+    .script(mdqtdir+'jquery.asuggest.js') 
+    .script(mdqtdir+'jquery.hoverIntent.min.js')
+    .script(mdqtdir+'taboverride.js')
+    .script(mdqtdir+'jquery.tipsy.js')
+    .script(mdqtdir+'textchange.jquery.js').wait(function() { 
+      jQuery('#quicktags').append(jQuery('<div id="ed_toolbar" />').append(jQuery('<div id="ed_button_container" />')));
+      jQuery.getJSON(ajaxurl,{action:'mdqt_options'},function(json){
+        jQuery('#content').mdqt_quicktags(json);
+      });
     });
   });
 }  
