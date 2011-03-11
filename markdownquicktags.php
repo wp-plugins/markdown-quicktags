@@ -6,7 +6,7 @@
 Plugin Name: Markdown QuickTags
 Plugin URI: http://brettterpstra.com/code/markdown-quicktags
 Description: Replaces the WordPress QuickTags with Markdown-compatible ones
-Version: 0.7.9
+Version: 0.7.10
 Author: Brett Terpstra
 Author URI: http://brettterpstra.com
 License: GPLv2
@@ -35,7 +35,6 @@ if ( !function_exists ('add_action') ) {
 	header('HTTP/1.1 403 Forbidden');
 	exit();
 }
-
 if ( function_exists('add_action') ) {
 	// Pre-2.6 compatibility
 	if ( !defined('WP_CONTENT_URL') )
@@ -60,6 +59,7 @@ class MarkdownQuickTags {
 		$this->siteurl = $this->trailingslashit(get_option('siteurl'));;
 		$this->js_path =  $this->siteurl . "wp-content/plugins/$plugin_dir/js/";
     $this->css_path =  $this->siteurl . "wp-content/plugins/$plugin_dir/css/";
+    $this->usercss = get_bloginfo('stylesheet_directory').'/mdqtstyle.css';
     
 		add_action( 'admin_print_scripts', array(&$this, 'js_libs' ));
 		add_action( 'wp_ajax_markdownify', array(&$this, 'markdownify' ));
@@ -86,11 +86,13 @@ class MarkdownQuickTags {
   function mdqt_admin_init() {
     wp_register_style( 'mdqt_style', $this->css_path . 'mdqt_style.css' );
     wp_register_style( 'peppergrinder', $this->css_path . 'peppergrinder.css');
+    wp_register_style( 'usercss', $this->usercss );
   }
 
   function mdqt_admin_styles() {
     wp_enqueue_style( 'mdqt_style' );
     wp_enqueue_style( 'peppergrinder' );
+    wp_enqueue_style( 'usercss' );
   }
 
 
@@ -102,7 +104,7 @@ class MarkdownQuickTags {
       wp_enqueue_script('jquery');
       wp_enqueue_script('jquery-ui-core');
       wp_enqueue_script('jquery-ui-dialog');
-
+      
       wp_enqueue_script('labjs',$this->js_path.'LAB.js', array(), null, false);
       wp_enqueue_script('mdqt',$this->js_path.'quicktags.jquery.js', array(), null, false);
     }

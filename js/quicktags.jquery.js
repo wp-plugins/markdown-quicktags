@@ -299,7 +299,7 @@
             prevchar = base.el.value.substring(caret,caret-1),
             contents,before,after,match;
             if (completing === false && prevchar == '[' && nextchar == ']') {
-              if (base.el.value.substring(caret-1,caret-2) == ']') {
+              if (base.el.value.substring(caret-1,caret-2) == ']') {                
                 $(this).unbind('keydown').unbind('keyup').createSuggest();
                 return true;
               }
@@ -365,13 +365,9 @@
                       }
                     }
                   }
-                  if (/\S/.test(nextchar) && !mdqt_getSelection(base.el)) {
-                    return true;
-                  } else {
-                    ev.preventDefault();
-                    insertPair(base.el,pair);
-                    return false;
-                  }
+                  ev.preventDefault();
+                  insertPair(base.el,pair);
+                  return false;
                 }
                 break;
               case 221: // ]
@@ -453,9 +449,10 @@
                 var graf;
                 var total = 0;
                 if (/\n/.test(prevchar)) {
-                  ev.preventDefault();
-                  base.$el.insertContent(base.el,"\n");
-                  return false;
+                  // ev.preventDefault();
+                  // base.$el.insertContent(base.el,"\n");
+                  // return false;
+                  return true;
                 }
                 if (ev.metaKey) {
                   for (graf in grafs) {
@@ -611,11 +608,11 @@
         if (snapshots.length >= 100) {
           snapshots = snapshots.slice(-100,snapshots.length);
         }
-        $('#undobutton').css('background','#92bd76');
-        clearInterval(snaptimer);
-        snaptimer = setTimeout(function(){
-          $('#undobutton').css('background','none');
-        },250);
+        // $('#undobutton').css('background','#92bd76');
+        // clearInterval(snaptimer);
+        // snaptimer = setTimeout(function(){
+        //   $('#undobutton').css('background','none');
+        // },250);
       }
     };
     function mdqt_setSelection(ctrl,start,end) {
