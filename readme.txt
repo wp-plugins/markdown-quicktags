@@ -3,7 +3,7 @@ Tags: markdown, editor, quicktags
 Requires at least: 3.0
 Contributors: ttscoff
 Tested up to: 3.1
-Stable tag: 0.7.9
+Stable tag: 0.7.10
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
 Replaces the HTML editor with a Markdown one. Extensive Markdown features and can render to HTML. Full-screen editing, configurable fonts and more.
@@ -201,3 +201,8 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 
 = 0.7.9 =
 * Restores the ability to switch back to Visual editor
+
+= 0.7.10 =
+* Fixes behavior of return key at bottom of screen
+* Sets editor background to white on focus
+* Stops constant lighting of undo tab
