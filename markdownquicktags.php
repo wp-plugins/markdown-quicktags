@@ -6,7 +6,7 @@
 Plugin Name: Markdown QuickTags
 Plugin URI: http://brettterpstra.com/code/markdown-quicktags
 Description: Replaces the WordPress QuickTags with Markdown-compatible ones
-Version: 0.7.10
+Version: 0.7.11
 Author: Brett Terpstra
 Author URI: http://brettterpstra.com
 License: GPLv2

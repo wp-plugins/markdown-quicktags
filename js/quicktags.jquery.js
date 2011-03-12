@@ -448,6 +448,7 @@
                 var grafs = base.$el.val().split("\n");
                 var graf;
                 var total = 0;
+                var scrollpos = base.el.scrollTop;
                 if (/\n/.test(prevchar)) {
                   // ev.preventDefault();
                   // base.$el.insertContent(base.el,"\n");
@@ -469,8 +470,7 @@
                 total = 0;
                 for (graf in grafs) {
                   if ((caret > total && caret < total + grafs[graf].length + 1) || caret == total) {
-                    if (/^(\s*)([\-\+\*]|\d+\.)(\s*)[\w`'"\(<\[]/.test(grafs[graf])) {
-                      
+                    if (/^(\s*)([\-\+\*]|\d+\.)(\s*)[\w`'"\(<\[]/.test(grafs[graf])) {                      
                       ev.preventDefault();
                       match = /^(\s*([\-\+\*]|\d+\.)(\s*))(.*)/.exec(grafs[graf]);
                       if (/(\d+)\./.test(match[2])) {
@@ -483,6 +483,7 @@
                       after = contents.substring(caret,contents.length);
                       base.$el.val(before+"\n"+match[1]+after);
                       setCaret(base.el,caret + match[1].length + 1);
+                      base.el.scrollTop = scrollpos;
                       return false;
                     } else if (/^(\s*)([\-\+\*]|\d+\.)(\s*)$/.test(grafs[graf])) {              
                       ev.preventDefault();
@@ -490,6 +491,7 @@
                       after = "\r\n"+grafs.slice(Number(graf) + 1, grafs.length).join("\n");
                       base.$el.val(before+after);
                       setCaret(base.el,before.length);
+                      base.el.scrollTop = scrollpos;
                       return false;
                     } else if (/^(\s*)(.)?/.test(grafs[graf])) {
                       ev.preventDefault();
@@ -504,6 +506,7 @@
                       }
                       base.$el.val(before+after);
                       setCaret(base.el,before.length);
+                      base.el.scrollTop = scrollpos;
                       return false;
                     } else {
                       return true;
