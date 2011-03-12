@@ -1,9 +1,9 @@
-=== Plugin Name ===
+=== Markdown QuickTags ===
 Tags: markdown, editor, quicktags
 Requires at least: 3.0
 Contributors: ttscoff
 Tested up to: 3.1
-Stable tag: 0.7.9
+Stable tag: 0.7.11
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
 Replaces the HTML editor with a Markdown one. Extensive Markdown features and can render to HTML. Full-screen editing, configurable fonts and more.
@@ -85,6 +85,10 @@ the snapshots with Command/Control-Z and Shift-Command/Control-Z.
 Snapshots are saved when most buttons are pressed, when text changes are
 detected, or large edits are made (such as rendering or running
 'markdownify' on the document). The Revert button will momentarily flash green when a snapshot is saved.
+
+**Overriding styles**
+
+If there's a particular style you don't like in the Markdown QuickTags editor--and you know a little CSS--you can override the default styles by placing a file in your current theme's directory called 'mdqtstyle.css'. It will be loaded after the default styles and can override what is found in that stylesheet. You might need to check to see what specificity the current styles have in their declarations, and occasionally need to use !important to override them.
 
 - - -
 
@@ -201,3 +205,11 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 
 = 0.7.9 =
 * Restores the ability to switch back to Visual editor
+
+= 0.7.10 =
+* Fixes behavior of return key at bottom of screen
+* Sets editor background to white on focus
+* Stops constant lighting of undo tab
+
+= 0.7.11 =
+* Fix for scroll jump on enter in Firefox

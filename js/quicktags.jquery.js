@@ -299,7 +299,7 @@
             prevchar = base.el.value.substring(caret,caret-1),
             contents,before,after,match;
             if (completing === false && prevchar == '[' && nextchar == ']') {
-              if (base.el.value.substring(caret-1,caret-2) == ']') {
+              if (base.el.value.substring(caret-1,caret-2) == ']') {                
                 $(this).unbind('keydown').unbind('keyup').createSuggest();
                 return true;
               }
@@ -365,13 +365,9 @@
                       }
                     }
                   }
-                  if (/\S/.test(nextchar) && !mdqt_getSelection(base.el)) {
-                    return true;
-                  } else {
-                    ev.preventDefault();
-                    insertPair(base.el,pair);
-                    return false;
-                  }
+                  ev.preventDefault();
+                  insertPair(base.el,pair);
+                  return false;
                 }
                 break;
               case 221: // ]
@@ -452,10 +448,12 @@
                 var grafs = base.$el.val().split("\n");
                 var graf;
                 var total = 0;
+                var scrollpos = base.el.scrollTop;
                 if (/\n/.test(prevchar)) {
-                  ev.preventDefault();
-                  base.$el.insertContent(base.el,"\n");
-                  return false;
+                  // ev.preventDefault();
+                  // base.$el.insertContent(base.el,"\n");
+                  // return false;
+                  return true;
                 }
                 if (ev.metaKey) {
                   for (graf in grafs) {
@@ -472,8 +470,7 @@
                 total = 0;
                 for (graf in grafs) {
                   if ((caret > total && caret < total + grafs[graf].length + 1) || caret == total) {
-                    if (/^(\s*)([\-\+\*]|\d+\.)(\s*)[\w`'"\(<\[]/.test(grafs[graf])) {
-                      
+                    if (/^(\s*)([\-\+\*]|\d+\.)(\s*)[\w`'"\(<\[]/.test(grafs[graf])) {                      
                       ev.preventDefault();
                       match = /^(\s*([\-\+\*]|\d+\.)(\s*))(.*)/.exec(grafs[graf]);
                       if (/(\d+)\./.test(match[2])) {
@@ -486,6 +483,7 @@
                       after = contents.substring(caret,contents.length);
                       base.$el.val(before+"\n"+match[1]+after);
                       setCaret(base.el,caret + match[1].length + 1);
+                      base.el.scrollTop = scrollpos;
                       return false;
                     } else if (/^(\s*)([\-\+\*]|\d+\.)(\s*)$/.test(grafs[graf])) {              
                       ev.preventDefault();
@@ -493,6 +491,7 @@
                       after = "\r\n"+grafs.slice(Number(graf) + 1, grafs.length).join("\n");
                       base.$el.val(before+after);
                       setCaret(base.el,before.length);
+                      base.el.scrollTop = scrollpos;
                       return false;
                     } else if (/^(\s*)(.)?/.test(grafs[graf])) {
                       ev.preventDefault();
@@ -507,6 +506,7 @@
                       }
                       base.$el.val(before+after);
                       setCaret(base.el,before.length);
+                      base.el.scrollTop = scrollpos;
                       return false;
                     } else {
                       return true;
@@ -611,11 +611,11 @@
         if (snapshots.length >= 100) {
           snapshots = snapshots.slice(-100,snapshots.length);
         }
-        $('#undobutton').css('background','#92bd76');
-        clearInterval(snaptimer);
-        snaptimer = setTimeout(function(){
-          $('#undobutton').css('background','none');
-        },250);
+        // $('#undobutton').css('background','#92bd76');
+        // clearInterval(snaptimer);
+        // snaptimer = setTimeout(function(){
+        //   $('#undobutton').css('background','none');
+        // },250);
       }
     };
     function mdqt_setSelection(ctrl,start,end) {
