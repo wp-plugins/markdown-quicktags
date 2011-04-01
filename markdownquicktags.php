@@ -1,19 +1,14 @@
 <?php
-/**
- * @package Markdown QuickTags
- */
 /*
 Plugin Name: Markdown QuickTags
 Plugin URI: http://brettterpstra.com/code/markdown-quicktags
 Description: Replaces the WordPress QuickTags with Markdown-compatible ones
-Version: 0.7.11
+Version: 0.7.12
 Author: Brett Terpstra
 Author URI: http://brettterpstra.com
 License: GPLv2
-*/
 
-/*
-Copyright 2010  Brett Terpstra  (email : me@brettterpstra.com)
+Copyright 2010  Brett Terpstra  (me@brettterpstra.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as 
@@ -345,4 +340,4 @@ function mdqt_settings_page() {
 
 </form>
 </div>
-<?php } ?>
+<?php }
