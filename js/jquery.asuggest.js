@@ -42,7 +42,8 @@
                 PAGEUP: 33,
                 PAGEDOWN: 34,
                 BACKSPACE: 8,
-                SPACE: 32
+                SPACE: 32,
+                RBRACKET: 221
     };
     $.asuggestFocused = null;
 
@@ -58,7 +59,7 @@
         'cycleOnTab': true,
         'autoComplete': true,
         'endingSymbols': ' ',
-        'stopSuggestionKeys': [$.asuggestKeys.RETURN, $.asuggestKeys.SPACE]
+        'stopSuggestionKeys': [$.asuggestKeys.RETURN, $.asuggestKeys.SPACE, $.asuggestKeys.RBRACKET]
     };
 
     /* Make suggest:
@@ -169,6 +170,8 @@
                 var _text = $area.getSelection().text +
                         $area.options.endingSymbols;
                 $area.replaceSelection(_text);
+                if (e.keyCode == 221)
+                  _selectionEnd = _selectionEnd + 1;
                 $area.setSelection(_selectionEnd, _selectionEnd);
                 e.preventDefault();
                 e.stopPropagation();
@@ -183,17 +186,14 @@
             var hasSpecialKeysOrShift = hasSpecialKeys || e.shiftKey;
             switch(e.keyCode){
             case KEY.UNKNOWN: // Special key released
+            case KEY.RBRACKET:
             case KEY.SHIFT:
             case KEY.CTRL:
             case KEY.ALT:
             case KEY.SPACE:
             case KEY.RETURN: // we don't want to suggest when RETURN key has pressed (another IE workaround)
                 var newMdqt = $area.data('mdqt.quicktags').$el;
-                var caret = newMdqt.getCaret();
-                nextchar = $area.val().substring(caret,caret + 1);
-                if (nextchar == ']')
-                  newMdqt.setCaretPos(area,caret+1);
-                  newMdqt.bindKeys();
+                newMdqt.bindKeys();
                 break;
             case KEY.TAB:
                 if (!hasSpecialKeysOrShift && $area.options.cycleOnTab){
