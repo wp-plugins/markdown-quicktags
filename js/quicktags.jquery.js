@@ -266,9 +266,11 @@
         // Run initializer
         base.init();
     };
+		$.fn.unbindKeys = function() {
+			$(this).unbind('keydown').unbind('keyup');
+		};
     $.fn.bindKeys = function() {
       var base = this;
-
       // Access to $ and DOM versions of element
       base.$el = $(this);
       base.el = $(this).get(0);
@@ -550,7 +552,7 @@
       if (matches) {        
         var refs = new Array();
         for (var i in matches) { 
-          refs.push(/\[([^\]]+)\]/.exec(matches[i])[1]);
+          refs.push(/\[([^\]]+)\]/.exec(matches[i])[1].toLowerCase());
         }
         return refs;
       }

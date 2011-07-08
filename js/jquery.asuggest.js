@@ -92,9 +92,9 @@
                 }
             }
             if (indexOfDelimiter < 0){
-                return textBeforeCursor;
+                return textBeforeCursor.toLowerCase();
             } else {
-                return textBeforeCursor.substr(indexOfDelimiter+1);
+                return textBeforeCursor.substr(indexOfDelimiter+1).toLowerCase();
             }
         }
 
@@ -103,7 +103,7 @@
          */
         $area.getCompletion = function(performCycle) {
             var text = this.getChunk();
-            var selectionText = this.getSelection().text;
+            var selectionText = this.getSelection().text.toLowerCase();
             var suggests = this.suggests;
             var foundAlreadySelectedValue = false;
             var firstMatchedValue = null;
