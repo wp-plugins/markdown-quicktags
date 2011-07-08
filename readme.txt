@@ -2,8 +2,8 @@
 Tags: markdown, editor, quicktags
 Requires at least: 3.0
 Contributors: ttscoff
-Tested up to: 3.1
-Stable tag: 0.7.13
+Tested up to: 3.2
+Stable tag: 0.7.14
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
 Replaces the HTML editor with a Markdown one. Extensive Markdown features and can render to HTML. Full-screen editing, configurable fonts and more.
@@ -159,6 +159,9 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 
 == Changelog ==
 
+= 0.7.14 =
+* Fixed a few conflicts that arose when the visual editor was enabled.
+
 = 0.7.13 =
 * Another attempt to fix "Invalid Header" error
 * Restored previous pairing style where a closing element would not be inserted if the character immediately following the cursor was a letter.
@@ -200,6 +203,9 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 * Initial Release
 
 == Upgrade Notice ==
+
+= 0.7.14 =
+* Fixes a few conflicts with the visual editor.
 
 = 0.7.13 =
 * Another attempt to fix "Invalid Header" error.
