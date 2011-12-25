@@ -1,4 +1,3 @@
-var edCanvas;
 (function($){
     if(!$.mdqt){
         $.mdqt = new Object();
@@ -13,7 +12,6 @@ var edCanvas;
         tabsize,
         snaptimer, snaptimeout, undoing = false;
     $.mdqt.quicktags = function(el, options) {
-        var edCanvas = document.getElementById('content');
         // To avoid scope issues, use 'base' instead of 'this'
         // to reference this class from internal events and functions.
         var base = this;
@@ -65,20 +63,20 @@ var edCanvas;
         edButtons[edButtons.length] = new edButton("ed_more", "more", "<!--more-->", "", "t","WordPress page break", -1);
         function edShowButton(b, a) {
             if (b.id == "ed_img") {
-                $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertImage(document.getElementById(\'content\'));" value="' + b.display + '" />');
+                $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertImage(edCanvas);" value="' + b.display + '" />');
             } else {
                 if (b.id == "ed_link") {
-                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertLink(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
+                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertLink(edCanvas, ' + a + ');" value="' + b.display + '" />');
                 } else if (b.id == "ed_reflink") {
-                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertRefLink(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
+                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertRefLink(edCanvas, ' + a + ');" value="' + b.display + '" />');
                 } else if (b.id == "ed_ref") {
-                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertRef(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
+                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertRef(edCanvas, ' + a + ');" value="' + b.display + '" />');
                 } else if (b.id == "ed_ul" || b.id == "ed_ol") {
-                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edMakeList(document.getElementById(\'content\'), ' + a + ', \'' + b.id.replace(/ed_(.)l/,"$1") + '\','+tabsize+');" value="' + b.display + '" />');
+                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edMakeList(edCanvas, ' + a + ', \'' + b.id.replace(/ed_(.)l/,"$1") + '\','+tabsize+');" value="' + b.display + '" />');
                 } else if (b.id == "ed_pasteref") {
-                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edPasteRefs(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
+                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edPasteRefs(edCanvas, ' + a + ');" value="' + b.display + '" />');
                 } else {
-                $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertTag(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '"  />');
+                $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertTag(edCanvas, ' + a + ');" value="' + b.display + '"  />');
               }
             }
         }
@@ -96,7 +94,7 @@ var edCanvas;
               edShowButton(edButtons[a], a);
           }
 
-          $('<div id="preview" />').css({'height': $('div.postarea').height() - 110,'overflow':'auto','display':'none'}).appendTo($('#wp-content-wrap'));
+          $('<div id="preview" />').css({'height': $('div.postarea').height() - 110,'overflow':'auto','display':'none'}).appendTo($('#editorcontainer'));
 
           $('<div id="utils" />').append($('<a href="#">Markdownify</a>').click(function(e){
             e.preventDefault();
@@ -224,7 +222,7 @@ var edCanvas;
           }).appendTo($('#ed_button_container'));
 
           if (options.showlookup)
-            $('#ed_button_container').append('<input type="button" id="ed_spell" class="ed_button" onclick="edSpell(document.getElementById("content"));" title="' + 'Dictionary lookup' + '" value="' + 'lookup' + '" />');
+            $('#ed_button_container').append('<input type="button" id="ed_spell" class="ed_button" onclick="edSpell(edCanvas);" title="' + 'Dictionary lookup' + '" value="' + 'lookup' + '" />');
           // document.write('<input type="button" id="ed_close" class="ed_button" onclick="edCloseAllTags();" title="' + 'Close all open tags' + '" value="' + 'close all' + '" />');
           if (options.tabsize)
             $.fn.tabOverride.setTabSize(options.tabsize);
@@ -244,23 +242,23 @@ var edCanvas;
             }
           });
           $('<form id="urlpaste" title="Paste text with one or more urls in it..."/>').css({display:'none',textAlign:'center'}).append($('<textarea />')).appendTo($('#ed_toolbar')).dialog({
-            autoOpen: false,
-            height: 400,
-            width: 500,
-            modal: true,
-            draggable: true,
-            resizable: false,
-            buttons: {
-              "Paste links": function() {
-                $( this ).dialog( "close" );
-                base.$el.makeRefs($(this).children('textarea').val());
-                $(this).children('textarea').val('');
-              },
-              Cancel: function() {
-                $( this ).dialog( "close" );
-              }
-            }
-          });
+      			autoOpen: false,
+      			height: 400,
+      			width: 500,
+      			modal: true,
+      			draggable: true,
+      			resizable: false,
+      			buttons: {
+      				"Paste links": function() {
+      					$( this ).dialog( "close" );
+      					base.$el.makeRefs($(this).children('textarea').val());
+      					$(this).children('textarea').val('');
+      				},
+      				Cancel: function() {
+      					$( this ).dialog( "close" );
+      				}
+      			}
+      		});
           base.$el.bindKeys();
           base.$el.takeSnapshot(base.$el.val(),1);
           $('#mdqt_loader').fadeOut('fast');
@@ -829,6 +827,8 @@ var edCanvas;
         if (!edCheckOpenTags(c)) {
           var a = prompt('Enter url', b);
             if (a) {
+              if (!/^[^:]{3,5}:\/\//.test(a))
+                a = 'http://'+a;
               if (!mdqt_getSelection(d)) {
                 edButtons[c].tagStart = '[' + prompt('Link text','') + '](' + a + ')';
                 edButtons[c].tagEnd = '';
@@ -1152,7 +1152,7 @@ var edCanvas;
     };
     var uniquenames = new Array();
     function contains(a, e) {
-      for(j=0;j<a.length;j++) {
+    	for(j=0;j<a.length;j++) {
         if(a[j]==e) {
           return true;
         }
@@ -1160,14 +1160,14 @@ var edCanvas;
     	return false;
     }
     function unique(a) {
-      tmp = new Array(0);
-      for(i=0;i<a.length;i++){
-        if(!contains(tmp, a[i])){
-          tmp.length+=1;
-          tmp[tmp.length-1]=a[i];
-        }
-      }
-      return tmp;
+    	tmp = new Array(0);
+    	for(i=0;i<a.length;i++){
+    		if(!contains(tmp, a[i])){
+    			tmp.length+=1;
+    			tmp[tmp.length-1]=a[i];
+    		}
+    	}
+    	return tmp;
     }
     function uniquename(name,i) {
       if (contains(uniquenames,name)) {
@@ -1193,16 +1193,17 @@ var edCanvas;
       var currPos = $(this).getCaret() + 1;
       resetUniquenames();
       // var urls = prompt('Paste text with URLs');
+
       var matches = urls.match(/(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*[\w\-\@^=%&amp;\/~\+#])?/gi);
       if (matches) {
-        var goodurls=unique(matches);
-        var output = [];
-        for (var i in goodurls) {
-          var s = goodurls[i].split('//')[1].split('/')[0].split('.');
+      	var goodurls=unique(matches);
+      	var output = [];
+      	for (var i in goodurls) {
+      	  var s = goodurls[i].split('//')[1].split('/')[0].split('.');
           var name = uniquename(s[s.length-2],0);
-          output.push('['+name+']: '+goodurls[i]);
-        }
-        var res = output.sort();
+      	  output.push('['+name+']: '+goodurls[i]);
+      	}
+      	var res = output.sort();      	
         $(this).insertContent(d,res.join("\n"));
         var firstName = /\[([^\]]+)\]/.exec(res[0])[1];
         mdqt_setSelection(d,currPos,currPos+firstName.length);
@@ -1240,90 +1241,17 @@ function edToolbar() {
     .script(mdqtdir+'taboverride.js')
     .script(mdqtdir+'jquery.tipsy.js')
     .script(mdqtdir+'textchange.jquery.js').wait(function() { 
-      jQuery('#wp-content-editor-container').prepend(jQuery('<div id="ed_toolbar" style="display:none"/>').append(jQuery('<div id="ed_button_container" />')));
+      jQuery('#quicktags').append(jQuery('<div id="ed_toolbar" />').append(jQuery('<div id="ed_button_container" />')));
       jQuery.getJSON(ajaxurl,{action:'mdqt_options'},function(json){
         jQuery('#content').mdqt_quicktags(json);
-        if (!jQuery('#content_ifr').is(':visible'))
-          jQuery('#ed_toolbar').show();
-        jQuery('a.wp-switch-editor').live('click',function(ev){
-          if (ev.target.id == 'content-html')
-            jQuery('#ed_toolbar').show();
-          else
-            jQuery('#ed_toolbar').hide();
-        });
       });
     });
   });
 }  
-
 function edInsertContent(el,text) {
-  jQuery(document.getElementById("content")).data('mdqt.quicktags').$el.insertContent(document.getElementById("content"),text);
+  jQuery(edCanvas).data('mdqt.quicktags').$el.insertContent(el,text);
 }
-var QTags = {};
-QTags.insertContent = function(txt) {
-  edInsertContent(null,txt);
-}
-QTags.closeAllTags = function(g) {
-  return true;
-}
+
 function edCloseAllTags() {
   return true;
 }
-
-function send_to_editor(c) {var b,a=typeof(tinymce)!="undefined",f=typeof(QTags)!="undefined";if(!wpActiveEditor){if(a&&tinymce.activeEditor){b=tinymce.activeEditor;wpActiveEditor=b.id}else{if(!f){return false}}}else{if(a){if(tinymce.activeEditor&&(tinymce.activeEditor.id=="mce_fullscreen"||tinymce.activeEditor.id=="wp_mce_fullscreen")){b=tinymce.activeEditor}else{b=tinymce.get(wpActiveEditor)}}}if(b&&!b.isHidden()){if(tinymce.isIE&&b.windowManager.insertimagebookmark){b.selection.moveToBookmark(b.windowManager.insertimagebookmark)}if(c.indexOf("[caption")===0){if(b.plugins.wpeditimage){c=b.plugins.wpeditimage._do_shcode(c)}}else{if(c.indexOf("[gallery")===0){if(b.plugins.wpgallery){c=b.plugins.wpgallery._do_gallery(c)}}else{if(c.indexOf("[embed")===0){if(b.plugins.wordpress){c=b.plugins.wordpress._setEmbed(c)}}}}b.execCommand("mceInsertContent",false,c)}else{if(f){edinsertContent(c)}else{document.getElementById(wpActiveEditor).value+=c}}try{tb_remove()}catch(d){}}
-
-(function(){
-	// private stuff is prefixed with an underscore
-	var _domReady = function(func) {
-		var t, i,  DOMContentLoaded;
-
-		if ( typeof jQuery != 'undefined' ) {
-			jQuery(document).ready(func);
-		} else {
-			t = _domReady;
-			t.funcs = [];
-
-			t.ready = function() {
-				if ( ! t.isReady ) {
-					t.isReady = true;
-					for ( i = 0; i < t.funcs.length; i++ ) {
-						t.funcs[i]();
-					}
-				}
-			};
-
-			if ( t.isReady ) {
-				func();
-			} else {
-				t.funcs.push(func);
-			}
-
-			if ( ! t.eventAttached ) {
-				if ( document.addEventListener ) {
-					DOMContentLoaded = function(){document.removeEventListener('DOMContentLoaded', DOMContentLoaded, false);t.ready();};
-					document.addEventListener('DOMContentLoaded', DOMContentLoaded, false);
-					window.addEventListener('load', t.ready, false);
-				} else if ( document.attachEvent ) {
-					DOMContentLoaded = function(){if (document.readyState === 'complete'){ document.detachEvent('onreadystatechange', DOMContentLoaded);t.ready();}};
-					document.attachEvent('onreadystatechange', DOMContentLoaded);
-					window.attachEvent('onload', t.ready);
-
-					(function(){
-						try {
-							document.documentElement.doScroll("left");
-						} catch(e) {
-							setTimeout(arguments.callee, 50);
-							return;
-						}
-
-						t.ready();
-					})();
-				}
-
-				t.eventAttached = true;
-			}
-		}
-	};
-  edCanvas = document.getElementById('content');
-  _domReady( function(){ edToolbar(); } );
-})();
