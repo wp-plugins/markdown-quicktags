@@ -3,7 +3,7 @@
 Plugin Name: Markdown QuickTags
 Plugin URI: http://brettterpstra.com/code/markdown-quicktags
 Description: Replaces the WordPress QuickTags with Markdown-compatible ones
-Version: 0.7.14
+Version: 0.8
 Author: Brett Terpstra
 Author URI: http://brettterpstra.com
 License: GPLv2
@@ -86,14 +86,18 @@ class MarkdownQuickTags {
   
   function mdqt_admin_init() {
     wp_register_style( 'mdqt_style', $this->css_path . 'mdqt_style.css' );
-//    wp_register_style( 'peppergrinder', $this->css_path . 'peppergrinder.css');
-    wp_register_style( 'usercss', $this->usercss );
+    // wp_register_style( 'peppergrinder', $this->css_path . 'peppergrinder.css');
+    if (file_exists($this->usercss)) {
+      wp_register_style( 'usercss', $this->usercss );
+    }
   }
 
   function mdqt_admin_styles() {
     wp_enqueue_style( 'mdqt_style' );
     // wp_enqueue_style( 'peppergrinder' );
-    wp_enqueue_style( 'usercss' );
+    if (file_exists($this->usercss)) {
+      wp_enqueue_style( 'usercss' );
+    }
   }
 
 
@@ -107,7 +111,11 @@ class MarkdownQuickTags {
       wp_enqueue_script('jquery-ui-dialog');
       
       wp_enqueue_script('labjs',$this->js_path.'LAB.js', array(), null, false);
-      wp_enqueue_script('mdqt',$this->js_path.'quicktags.jquery.js', array(), null, false);
+      global $wp_version;
+      if ((float)$wp_version >= 3.3)
+        wp_enqueue_script('mdqt',$this->js_path.'quicktags.jquery.js', array(), null, false);
+      else
+        wp_enqueue_script('mdqt',$this->js_path.'quicktags3.2.jquery.js', array(), null, false);
     }
 	}
 	
@@ -265,6 +273,23 @@ function mdqt_settings_page() {
 
 <form method="post" action="options.php">
     <?php settings_fields( 'mdqt-settings-group' ); ?>
+    <style>
+      .form-table {
+      width: 350px !important;
+      clear: none !important;
+      float: left;
+      margin-right: 20px;
+      }
+      th{text-align:right !important}
+      #demoshow {
+        float:left;
+      }
+      #demoshow #content {
+        width: 370px;
+        height: 350px;
+        padding-top:45px !important;
+      }
+    </style>
     <table class="form-table">
         <tr valign="top">
         <th scope="row">Full screen editor width</th>
@@ -273,8 +298,8 @@ function mdqt_settings_page() {
          
         <tr valign="top">
         <th scope="row">Full screen editor background color</th>
-        <td><div style="position:relative;float:left"><input type="text" id="mdqt_fullscreenbg" name="mdqt_fullscreenbg" value="<?php echo get_option('mdqt_fullscreenbg'); ?>" maxlength="7" size="7" />
-              <div id="colorpicker" style="display:none;position:absolute;right:-200px;top:-80px"></div></div>
+        <td><div style="position:relative;float:left"><input type="text" id="mdqt_fullscreenbg" name="mdqt_fullscreenbg" value="<?php echo get_option('mdqt_fullscreenbg'); ?>" maxlength="27" size="12" />
+              <div id="colorpicker" style="display:none;position:absolute;right:-200px;top:-80px;z-index:99"></div></div>
           </td>
         </tr>
         
@@ -322,6 +347,8 @@ function mdqt_settings_page() {
           <option value="CantarellRegular"<?php selected( get_option('mdqt_font'), 'CantarellRegular' ); ?>>Cantarell</option>
           <option value="BitstreamVeraSansRoman"<?php selected( get_option('mdqt_font'), 'BitstreamVeraSansRoman' ); ?>>Bitstream Vera Sans</option>
           <option value="YanoneKaffeesatzRegular"<?php selected( get_option('mdqt_font'), 'YanoneKaffeesatzRegular' ); ?>>YanoneKafeesatz</option>
+          <option value="Duru Sans"<?php selected( get_option('mdqt_font'), 'Duru Sans' ); ?>>Duru Sans (Google Fonts)</option>
+          <option value="Trykker"<?php selected( get_option('mdqt_font'), 'Trykker' ); ?>>Trykker (Google Fonts)</option>
         </select></td>
         </tr>
         
@@ -330,20 +357,40 @@ function mdqt_settings_page() {
         <td>
           <select name="mdqt_fontsize" id="mdqt_fontsize" size="1">
             <option value="10"<?php selected( get_option('mdqt_fontsize'), '10' ); ?>>10</option>
+            <option value="11"<?php selected( get_option('mdqt_fontsize'), '11' ); ?>>11</option>
             <option value="12"<?php selected( get_option('mdqt_fontsize'), '12' ); ?>>12</option>
+            <option value="13"<?php selected( get_option('mdqt_fontsize'), '13' ); ?>>13</option>
             <option value="14"<?php selected( get_option('mdqt_fontsize'), '14' ); ?>>14</option>
+            <option value="15"<?php selected( get_option('mdqt_fontsize'), '15' ); ?>>15</option>
+            <option value="16"<?php selected( get_option('mdqt_fontsize'), '16' ); ?>>16</option>
+            <option value="17"<?php selected( get_option('mdqt_fontsize'), '17' ); ?>>17</option>
             <option value="18"<?php selected( get_option('mdqt_fontsize'), '18' ); ?>>18</option>
           </select>
         </td>
         </tr>
-        
-    </table>
-    
-    <p class="submit">
+        <tr>
+          <th scope="row"><p class="submit">
     <input type="submit" class="button-primary" value="<?php _e('Save Changes', 'markdown-quicktags') ?>" />
-    </p>
-    
-
+    </p></th><td></td>
+        </tr>
+    </table>
+    <div id="demoshow">
+      <h3>Editor preview</h3>
+      <div id="ed_toolbar" style="min-width:300px !important;width:400px"><div id="ed_button_container" style="min-width:300px !important;margin:0;width:400px"><input type="button" title="Transform pasted urls into references" id="ed_pasteref" accesskey="p" class="ed_button"  value="↓]:"><input type="button" title="Insert Reference link" id="ed_reflink" accesskey="r" class="ed_button"  value="][ ]"><input type="button" title="Insert Inline link" id="ed_link" accesskey="l" class="ed_button"  value="]( )"><input type="button" title="Bold/Strong" id="ed_strong" accesskey="b" class="ed_button"  value="b"><input type="button" title="Italics/Em" id="ed_em" accesskey="i" class="ed_button"  value="i"><input type="button" title="Block Quote" id="ed_block" accesskey="q" class="ed_button"  value="“"><input type="button" title="&lt;del&gt; tag with date/time" id="ed_del" accesskey="d" class="ed_button"  value="del"><input type="button" title="&lt;ins&gt; tag with date/time" id="ed_ins" accesskey="s" class="ed_button"  value="ins"><input type="button" title="Insert inline image" id="ed_img" accesskey="m" class="ed_button"  value="img"></div></div>
+    <div id="content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+    </div>
 </form>
 </div>
+<script>
+  (function($){
+    function updatePreview() {
+      $('#content').css({
+        'font-family':$('#mdqt_font').val(),
+        'font-size':$('#mdqt_fontsize').val()+'px'
+      });
+    }
+    $('#mdqt_font,#mdqt_fontsize,#mdqt_theme').live('change',function(){updatePreview();});
+    updatePreview();
+  })(jQuery);
+</script>
 <?php }

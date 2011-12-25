@@ -2,8 +2,8 @@
 Tags: markdown, editor, quicktags
 Requires at least: 3.0
 Contributors: ttscoff
-Tested up to: 3.2
-Stable tag: 0.7.14
+Tested up to: 3.3
+Stable tag: 0.8
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
 Replaces the HTML editor with a Markdown one. Extensive Markdown features and can render to HTML. Full-screen editing, configurable fonts and more.
@@ -149,15 +149,24 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 == Installation ==
 
 1. Upload the folder `markdown-quicktags` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-2. Configure options under the **Settings->Markdown QuickTags** menu
-3. The changes to your HTML editor are automatic
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Configure options under the **Settings->Markdown QuickTags** menu
+4. The changes to your HTML editor are automatic
 
 == Screenshots ==
 
 1. The Markdown QuickTags editor in a Post or Page edit screen
+2. The Markdown QuickTags settings panel (v0.8)
 
 == Changelog ==
+
+= 0.8 =
+* WordPress 3.3 compatibility (still backwards compatible)
+* More font size options
+* New font choices (Google Fonts)
+* Font preview in settings
+* Redesigned UI
+* Various fixes for editing quirks and popup dialog styling
 
 = 0.7.14 =
 * Fixed a few conflicts that arose when the visual editor was enabled.
@@ -203,6 +212,10 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 * Initial Release
 
 == Upgrade Notice ==
+
+= 0.8 =
+* WordPress 3.3 compatibility (still backwards compatible) and smaller bug fixes
+* New styling and more options!
 
 = 0.7.14 =
 * Fixes a few conflicts with the visual editor.
