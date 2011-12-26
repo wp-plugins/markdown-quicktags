@@ -6,7 +6,7 @@ Tested up to: 3.3
 Stable tag: 0.8.2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
-Replaces the HTML editor with a Markdown one. Extensive Markdown features and can render to HTML. Full-screen editing, configurable fonts and more.
+Replace the WordPress HTML editor with a Markdown one. Auto-pairing, wrapping, preview/render, customizable editor fonts and more.
 
 == Description ==
 
