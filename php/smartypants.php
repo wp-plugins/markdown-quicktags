@@ -32,35 +32,7 @@ $smartypants_attr = "1";  # Change this to configure.
 $sp_tags_to_skip = '<(/?)(?:pre|code|kbd|script|math)[\s>]';
 
 
-# -- WordPress plugin interface -----------------------------------------------
-/*
-Plugin Name: SmartyPants
-Plugin URI: http://www.michelf.com/projects/php-smartypants/
-Description: SmartyPants is a web publishing utility that translates plain ASCII punctuation characters into &#8220;smart&#8221; typographic punctuation HTML entities. This plugin <strong>replace the default WordPress Texturize algorithm</strong> for the content and the title of your posts, the comments body and author name, and everywhere else Texturize normally apply. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>.
-Version: 1.5.1e
-Author: Michel Fortin
-Author URI: http://www.michelf.com/
-*/
-if (isset($wp_version)) {
-	# Remove default Texturize filter that would conflict with SmartyPants.
-	remove_filter('category_description', 'wptexturize');
-	remove_filter('list_cats', 'wptexturize');
-	remove_filter('comment_author', 'wptexturize');
-	remove_filter('comment_text', 'wptexturize');
-	remove_filter('single_post_title', 'wptexturize');
-	remove_filter('the_title', 'wptexturize');
-	remove_filter('the_content', 'wptexturize');
-	remove_filter('the_excerpt', 'wptexturize');
-	# Add SmartyPants filter with priority 10 (same as Texturize).
-	add_filter('category_description', 'SmartyPants', 10);
-	add_filter('list_cats', 'SmartyPants', 10);
-	add_filter('comment_author', 'SmartyPants', 10);
-	add_filter('comment_text', 'SmartyPants', 10);
-	add_filter('single_post_title', 'SmartyPants', 10);
-	add_filter('the_title', 'SmartyPants', 10);
-	add_filter('the_content', 'SmartyPants', 10);
-	add_filter('the_excerpt', 'SmartyPants', 10);
-}
+
 
 # -- Smarty Modifier Interface ------------------------------------------------
 function smarty_modifier_smartypants($text, $attr = NULL) {
