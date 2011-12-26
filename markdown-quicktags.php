@@ -3,13 +3,12 @@
 Plugin Name: Markdown QuickTags
 Plugin URI: http://brettterpstra.com/code/markdown-quicktags
 Description: Replaces the WordPress QuickTags with Markdown-compatible ones
-Version: 0.8
+Version: 0.8.2
 Author: Brett Terpstra
 Author URI: http://brettterpstra.com
 License: GPLv2
 */
-
-/**
+/*
  * Copyright (c) 2011 Brett Terpstra. All rights reserved.
  *
  * Released under the GPL license
@@ -30,22 +29,6 @@ License: GPLv2
  * GNU General Public License for more details.
  * **********************************************************************
  */
-
-if ( !function_exists ('add_action') ) {
-	header('Status: 403 Forbidden');
-	header('HTTP/1.1 403 Forbidden');
-	exit();
-}
-if ( function_exists('add_action') ) {
-	// Pre-2.6 compatibility
-	if ( !defined('WP_CONTENT_URL') )
-		define( 'WP_CONTENT_URL', get_option('url') . '/wp-content');
-	if ( !defined('WP_CONTENT_DIR') )
-		define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
-	if ( !defined('WP_CONTENT_FOLDER') )
-		define( 'WP_CONTENT_FOLDER', str_replace(ABSPATH, '/', WP_CONTENT_DIR) );
-}
-
 $mdQuickTags = new MarkdownQuickTags();
 
 class MarkdownQuickTags {
@@ -85,7 +68,7 @@ class MarkdownQuickTags {
   }
   
   function mdqt_admin_init() {
-    wp_register_style( 'mdqt_style', $this->css_path . 'mdqt_style.css' );
+    wp_register_style( 'mdqt_style', $this->css_path . 'mdqt_style.css', false, '0.8.1' );
     // wp_register_style( 'peppergrinder', $this->css_path . 'peppergrinder.css');
     if (file_exists($this->usercss)) {
       wp_register_style( 'usercss', $this->usercss );

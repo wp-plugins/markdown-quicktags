@@ -3,7 +3,7 @@ Tags: markdown, editor, quicktags
 Requires at least: 3.0
 Contributors: ttscoff
 Tested up to: 3.3
-Stable tag: 0.8
+Stable tag: 0.8.2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
 Replaces the HTML editor with a Markdown one. Extensive Markdown features and can render to HTML. Full-screen editing, configurable fonts and more.
@@ -160,6 +160,12 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 
 == Changelog ==
 
+= 0.8.2 =
+* Another attempt to fix the invalid header issue. I think I got it.
+
+= 0.8.1 =
+* A probably-failed attempt to solve the invalid header issue
+
 = 0.8 =
 * WordPress 3.3 compatibility (still backwards compatible)
 * More font size options
@@ -212,6 +218,12 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 * Initial Release
 
 == Upgrade Notice ==
+
+= 0.8.2 =
+* I seriously think this resolves the invalid header issue. Really.
+
+= 0.8.1 =
+* A probably-failed attempt to solve the invalid header issue
 
 = 0.8 =
 * WordPress 3.3 compatibility (still backwards compatible) and smaller bug fixes
