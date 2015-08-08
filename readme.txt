@@ -224,6 +224,11 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 
 == Upgrade Notice ==
 
+= 0.9.2 =
+* Initial updates for WP 4
+* Media Uploader fixes/Markdown integration
+* Style updates
+
 = 0.8.2 =
 * I seriously think this resolves the invalid header issue. Really.
 
