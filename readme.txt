@@ -3,7 +3,7 @@ Tags: markdown, editor, quicktags
 Requires at least: 3.0
 Contributors: ttscoff
 Tested up to: 4.2.4
-Stable tag: 0.9.1
+Stable tag: 0.9.2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
 Replace the WordPress HTML editor with a Markdown one. Auto-pairing, wrapping, preview/render, customizable editor fonts and more.
@@ -160,7 +160,7 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 
 == Changelog ==
 
-= 0.9.1 =
+= 0.9.2 =
 * Fixes for WP 4+
 * Style updates
 * Option to insert images from Media Uploader in Markdown syntax
