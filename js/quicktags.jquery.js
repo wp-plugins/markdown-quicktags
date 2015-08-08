@@ -17,15 +17,15 @@ var edCanvas;
         // To avoid scope issues, use 'base' instead of 'this'
         // to reference this class from internal events and functions.
         var base = this;
-        
+
         // Access to $ and DOM versions of element
         base.$el = $(el);
         base.el = el;
-        
+
         // Add a reverse reference to the DOM object
         base.$el.data("mdqt.quicktags", base);
-        
-        
+
+
         function edButton(f, e, c, b, a, g, d) {
             this.id = f;
             this.display = e;
@@ -84,19 +84,23 @@ var edCanvas;
         }
 
 
-        
-        
+
+
         base.init = function(){
           if (options.tabsize)
             tabsize = options.tabsize;
           $('<div id="mdqt_loader" />').appendTo($('.postarea')).fadeIn('fast');
-          $content = base.$el;          
+          $content = base.$el;
           content = base.el;
           for (var a = 0; a < edButtons.length; a++) {
               edShowButton(edButtons[a], a);
           }
 
-          $('<div id="preview" />').css({'height': $('div.postarea').height() - 110,'overflow':'auto','display':'none'}).appendTo($('#wp-content-wrap'));
+          $('<div id="preview" />').css({
+            height: ($('div.postarea').height() - 110) + 'px',
+            overflow:'auto',
+            display:'none'
+          }).appendTo($('#wp-content-wrap'));
 
           $('<div id="utils" />').append($('<a href="#">Markdownify</a>').click(function(e){
             e.preventDefault();
@@ -158,7 +162,7 @@ var edCanvas;
           $('<input type="button" id="previewbutton" title="Preview"/>').click(function(e){
             e.preventDefault();
             $('#mdqt_loader').fadeIn('fast');
-            if (!$(this).hasClass('activeutil')) {      
+            if (!$(this).hasClass('activeutil')) {
               $(this).addClass('activeutil');
                     var content = base.$el.val();
               var cheight = base.$el.height();
@@ -168,14 +172,21 @@ var edCanvas;
               base.$el.fadeOut('fast',function(){
                 $.post(ajaxurl,{action:'markdown',input:content,type:'preview'},function(json){
                   $('#preview').html(json.html);
-                  if ($('#previewbutton').text() != 'Preview')
-                    $('#preview').height($('div.postarea').height() - 135).fadeIn();
+                  if ($('#previewbutton').text() !== 'Preview') {
+                    // $('#preview').fadeIn();
+                    $('#preview').css({
+                      height: '100%'
+                    }).fadeIn();
+                  }
+                    // $('#preview').css({
+                    //   height: ($('div.postarea').height() - 135) + 'px'
+                    // }).fadeIn();
                   $('#mdqt_loader').fadeOut('fast');
                   $('#editorcontainer').height('auto');
 
                 },"json");
 
-              });      
+              });
             } else {
               $('#preview').stop(true,true).hide();
               $('#mdqt_loader').stop(true,true).fadeOut('fast');
@@ -188,26 +199,36 @@ var edCanvas;
 
           $('<input type="button" id="fullscreenbutton" title="Full Screen Editor"/>').click(function(e){
             e.preventDefault();
-            if (!$(this).hasClass('activeutil')) {      
+            if (!$(this).hasClass('activeutil')) {
               $(this).addClass('activeutil');
               $('<div id="fullscreenoverlay" />').css({'display':'none','background':options.fullscreenbg,'opacity':options.fullscreenbgopacity}).insertBefore($('div.postarea')).fadeIn();
-              $('div.postarea').height('100%').fadeOut('fast',function(){
+              $('div.postarea').css({
+                height: '100%'
+              }).fadeOut('fast',function(){
                 $('body').css('overflow','hidden');
                 var marginleft = options.fullscreenwidth / 2;
-                $(this).addClass('supermarkdowneditoraway').css({'width':options.fullscreenwidth+'px','margin-left':'-'+marginleft+'px'}).fadeIn('fast',function(){
+                $(this).addClass('supermarkdowneditoraway').css({
+                  width: options.fullscreenwidth+'px',
+                  marginLeft: '-'+marginleft+'px',
+                  paddingTop: '25px',
+                  height: '100%'
+                }).fadeIn('fast',function(){
                   if ($('#preview').is(':visible'))
                     $('div.supermarkdowneditoraway #utils').hide();
 
-                  $('#content,#preview').css('height',$('div.postarea').height() - 95);
+                  $('#content, #wp-content-editor-container, #wp-content-wrap').css({
+                    height: '100%'
+                  });
+                  // $('#content,#preview').css('height',$('div.postarea').height() - 95);
 
                 });
 
               });
               $(window).resize(function() {
                 $('div.postarea').height('100%');
-                base.$el.css('height',$('div.postarea').height() - 95);          
-                $('#preview').css('height',$('div.postarea').height() - 136);          
-              });      
+                base.$el.css('height',$('div.postarea').height() - 95);
+                $('#preview').css({height: '100%'});
+              });
             } else {
               $(this).removeClass('activeutil');
               $('div.postarea').fadeOut('fast',function(){
@@ -218,7 +239,7 @@ var edCanvas;
                 });
               });
 
-              $('#content,#preview').css({'height':'auto'});
+              // $('#content,#preview').css({'height':'auto'});
             }
             return false;
           }).appendTo($('#ed_button_container'));
@@ -235,7 +256,7 @@ var edCanvas;
           if (options.fontsize)
             base.$el.css({'font-size':options.fontsize+'px'});
           base.$el.bind('textchange', function () {
-            if (!undoing) {              
+            if (!undoing) {
               clearTimeout(snaptimeout);
               var self = this;
               snaptimeout = setTimeout(function () {
@@ -276,7 +297,7 @@ var edCanvas;
       // Access to $ and DOM versions of element
       base.$el = $(this);
       base.el = $(this).get(0);
-      
+
       function insertPair(c,pair) {
         $(this).takeSnapshot($(c).val(),$(this).getSelorCaret(c));
         var caret = base.$el.getCaret();
@@ -290,7 +311,7 @@ var edCanvas;
           setCaret(c,newcaret);
         }
       }
-      
+
           $(this).unbind('keydown').unbind('keyup').bind('keydown',function(ev){
             if (!ev.ctrlKey && !ev.metaKey && !ev.altKey) {
               undoing = false;
@@ -351,7 +372,7 @@ var edCanvas;
                     pair = ['[',']'];
                   } else if (code === 192 && !ev.shiftKey) {
                     pair = ['`','`'];
-                  } else if (code === 222) {                
+                  } else if (code === 222) {
                     if (ev.shiftKey)
                       thechar = '"';
                     else
@@ -396,7 +417,7 @@ var edCanvas;
                   ev.preventDefault();
                   caret = base.$el.getCaret();
                   if (mdqt_getSelection(base.el))
-                    return true;              
+                    return true;
                   if (nextchar == thechar) {
                     setCaret(base.el,caret + 1);
                   } else {
@@ -478,14 +499,14 @@ var edCanvas;
                 total = 0;
                 for (graf in grafs) {
                   if ((caret > total && caret < total + grafs[graf].length + 1) || caret == total) {
-                    if (/^(\s*)([\-\+\*]|\d+\.)(\s*)[\w`'"\(<\[]/.test(grafs[graf])) {                      
+                    if (/^(\s*)([\-\+\*]|\d+\.)(\s*)[\w`'"\(<\[]/.test(grafs[graf])) {
                       ev.preventDefault();
                       match = /^(\s*([\-\+\*]|\d+\.)(\s*))(.*)/.exec(grafs[graf]);
                       if (/(\d+)\./.test(match[2])) {
                         var digit = /^(\s*)(\d+)(\.\s.*)/.exec(match[1]);
                         var inc = Number(digit[2]) + 1;
                         match[1] = digit[1] + inc + digit[3];
-                      } 
+                      }
                       contents = base.$el.val();
                       before = contents.substring(0,caret);
                       after = contents.substring(caret,contents.length);
@@ -493,7 +514,7 @@ var edCanvas;
                       setCaret(base.el,caret + match[1].length + 1);
                       base.el.scrollTop = scrollpos;
                       return false;
-                    } else if (/^(\s*)([\-\+\*]|\d+\.)(\s*)$/.test(grafs[graf])) {              
+                    } else if (/^(\s*)([\-\+\*]|\d+\.)(\s*)$/.test(grafs[graf])) {
                       ev.preventDefault();
                       before = grafs.slice(0, graf).join("\n") + "\n";
                       after = "\r\n"+grafs.slice(Number(graf) + 1, grafs.length).join("\n");
@@ -551,9 +572,9 @@ var edCanvas;
     }
     $.fn.getRefs = function() {
       var matches = $(this).val().match(/\[([^\]]+)\]\: (.*)/gi),a;
-      if (matches) {        
+      if (matches) {
         var refs = new Array();
-        for (var i in matches) { 
+        for (var i in matches) {
           refs.push(/\[([^\]]+)\]/.exec(matches[i])[1].toLowerCase());
         }
         return refs;
@@ -572,27 +593,27 @@ var edCanvas;
 
     $.fn.getCaret = function() {
         var el = $(this).get(0);
-        if (el.selectionStart) { 
-          return el.selectionStart; 
-        } else if (document.selection) { 
-          el.focus(); 
+        if (el.selectionStart) {
+          return el.selectionStart;
+        } else if (document.selection) {
+          el.focus();
 
-          var r = document.selection.createRange(); 
-          if (r === null) { 
-            return 0; 
-          } 
+          var r = document.selection.createRange();
+          if (r === null) {
+            return 0;
+          }
 
-          var re = el.createTextRange(), 
-              rc = re.duplicate(); 
-          re.moveToBookmark(r.getBookmark()); 
-          rc.setEndPoint('EndToStart', re); 
+          var re = el.createTextRange(),
+              rc = re.duplicate();
+          re.moveToBookmark(r.getBookmark());
+          rc.setEndPoint('EndToStart', re);
 
-          return rc.text.length; 
-        }  
-        return 0; 
+          return rc.text.length;
+        }
+        return 0;
     };
     $.fn.getSelorCaret = function(el){
-      var coords = getSelectionCoord(el);    
+      var coords = getSelectionCoord(el);
       if (coords && typeof coords !== 'object') {
           d = document.selection.createRange();
           if (d.text.length > 0) {
@@ -600,7 +621,7 @@ var edCanvas;
           } else {
             return $(this).getCaret();
           }
-      } else {      
+      } else {
         if (coords.start !== coords.end) {
           return coords;
         } else {
@@ -655,7 +676,7 @@ var edCanvas;
     		range.select();
     	}
     }
-    
+
     function mdqt_getSelection(el) {
       var coords = getSelectionCoord(el);
       if (coords && typeof coords !== 'object') {
@@ -663,7 +684,7 @@ var edCanvas;
           if (d.text.length > 0) {
             return d.text;
           }
-      } else {      
+      } else {
         if (coords.start !== coords.end) {
             return el.value.substring(coords.start, coords.end);
         }
@@ -857,8 +878,8 @@ var edCanvas;
             $(this).insertContent(b, a);
         }
     };
-    
-    
+
+
     $.fn.undoBack = function() {
       if (snapshots.length > 0) {
         undoing = true;
@@ -889,7 +910,7 @@ var edCanvas;
       }
     };
     var helptext = '<div id="markdownref"><h2 class="section-name">Text</h2><div class="section"><table><tr><th>Markdown</th><th>Result</th></tr><tr><td>This text is **bold**.</td><td>This text is<strong>bold</strong>.</td></tr><tr class="alternate"><td>This text is *italicized*.</td><td>This text is<em>italicized</em>.</td></tr><tr><td>`This is some code.`</td><td><code>This is some code.</code></td></tr></table></div><h2 class="section-name">Headings</h2><div class="section"><table><tr><th>Markdown</th><th>Result</th></tr><tr><td># First Header</td><td><h1>First Header</h1></td></tr><tr class="alternate"><td>## Second Header</td><td><h2>Second Header</h2></td></tr><tr><td>### Third Header</td><td><h3>Third Header</h3></td></tr></table></div><h2 class="section-name">Quotes</h2><div class="section"><table><tr class="alternate"><td>> This is the first level of quoting.<br />>>This is nested blockquote.<br />> Back to the first level.</td><td><blockquote>This is the first level of quoting.<blockquote>This is nested blockquote.</blockquote>Back to the first level.</blockquote></td></tr></table></div><h2 class="section-name">Horizontal Rules</h2><div class="section"><table><tr class="alternate"><td>- - -<br />* * *<br /></td><td><hr /></td></tr></table></div><h2 class="section-name">Links and Images</h2><div class="section"><table><tr><td>This is an [inline link](http://brettterpstra.com/contact "with an optional title").</td><td>This is an <a href="http://brettterpstra.com/contact" title="with an optional title" target="_blank">inline link</a>.</td></tr><tr class="alternate"><td>This is a [reference link][ref].<br/>[ref]: http://brettterpstra.com "with an optional title"</td><td>This is a <a href="http://brettterpstra.com">reference link</a>.</td></tr><tr><td>Send me an email at &lt;address@example.com&gt;.</td><td>Send me an email at <a href="mailto:address@example.com">address@example.com</a>.</td></tr><tr><td>![Markdown QuickTags logo](http://brettterpstra.com/markdownquicktagsicon.png)<br/>-------OR------<br/>![Reference style][logo]<br/>[logo]: http://brettterpstra.com/markdownquicktagsicon.png</td><td><img src="http://brettterpstra.com/wp-content/uploads/downloads/thumbnails/2010/11/markdownquicktagsicon.png" alt="Markdown QuickLinks logo" /></td></tr></table></div><h2 class="section-name">Lists</h2><div class="section"><table><tr><th>Markdown</th><th>Result</th></tr><tr><td>* Bulleted<br />* List<br />&nbsp;&nbsp;* Nested<br />&nbsp;&nbsp;* List<br />* Parent level</td><td><ul><li>Bulleted</li><li>List<ul><li>Nested</li><li>List</li></ul></li><li>Parent level</li></ul></td></tr><tr class="alternate"><td>1. Numbered<br />2. List<br />&nbsp;&nbsp;1. Nested<br />&nbsp;&nbsp;2. List<br />3. Parent level</td><td><ol><li>Numbered</li><li>List<ol><li>Nested</li><li>List</li></ol></li><li>Parent level</li></ol></td></tr><tr><td>1. Mixed<br />1. Type<br />1. List<br />&nbsp;&nbsp;* Nested<br />&nbsp;&nbsp;* Bulleted<br />&nbsp;&nbsp;* List<br />1. Parent level</td><td><ol><li>Mixed</li><li>Type</li><li>List<ul><li>Nested</li><li>Bulleted</li><li>List</li></ul></li><li>Parent level</li></ol></td></tr></table></div><hr /><p style="text-align:center"><small>Original reference by <a href="https://github.com/edouard/human-markdown-reference" title="">edouard</a>.</small></p></div>';
-    
+
     function isUrl(s) {
     	var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
     	return regexp.test(s);
@@ -903,10 +924,10 @@ var edCanvas;
         if (!edCheckOpenTags(c)) {
           var matches = d.value.match(/\[([^\]]+)\]\: (.*)/gi);
           var a;
-          if (matches) {        
+          if (matches) {
             var refs = new Array();
             var links = new Array();
-            for (var i in matches) { 
+            for (var i in matches) {
               refs.push(/\[([^\]]+)\]/.exec(matches[i])[1]);
               var link = /\[[^\]]+\]\: *(.*)/.exec(matches[i])[1];
               if (!(/\/$/).test(link))
@@ -930,9 +951,9 @@ var edCanvas;
                 return false;
               });
               $('#selectmenu').change(function(){
-                a = $(this).val();            
-                $('#reflinkwrap').slideUp('fast',function(){ 
-                  $(this).remove(); 
+                a = $(this).val();
+                $('#reflinkwrap').slideUp('fast',function(){
+                  $(this).remove();
                   if (a !== "")
                     edInsertRefLinkCallback(a,d,c,b);
                 });
@@ -942,7 +963,7 @@ var edCanvas;
             }
           } else {
             a = prompt('Enter Reference Title');
-            edInsertRefLinkCallback(a,d,c,b);        
+            edInsertRefLinkCallback(a,d,c,b);
           }
         } else {
             $(this).edInsertTag(d, c);
@@ -952,7 +973,7 @@ var edCanvas;
       if (!mdqt_getSelection(d)) {
         var caret = $(this).getCaret();
 
-        
+
         var nextchar = d.value.substring(caret,caret+1);
         var prevchar = d.value.substring(caret,caret-1);
         if (nextchar == ']' && prevchar == '[') {
@@ -971,7 +992,7 @@ var edCanvas;
         $(this).edInsertTag(d, c);
       }
 
-    }  
+    }
     function edInsertRef(d, c, b) {
         var sel = false,
         url = false,
@@ -999,7 +1020,7 @@ var edCanvas;
           url = prompt('Enter url', b) || '';
         if (!edCheckOpenTags(c)) {
           if (d.selectionEnd <= d.selectionStart) {
-            if (!title) 
+            if (!title)
               title = prompt('Reference Title','') || '';
             edButtons[c].tagStart = '[' + title + ']: ' + url;
             edButtons[c].tagEnd = '';
@@ -1030,7 +1051,7 @@ var edCanvas;
         }
         return lines.join("\n");
       }
-      
+
       for (var aspace in spacesOrTabs) {
         if ((/\t/).test(spacesOrTabs[aspace]))
           indent += parseInt(tabsize,10);
@@ -1072,7 +1093,7 @@ var edCanvas;
         } else {
           counter = holdcounter;
         }
-        
+
       }
       return lines.join("\n");
     }
@@ -1231,15 +1252,15 @@ var edCanvas;
 function edToolbar() {
   var mdqtdir;
   jQuery.getJSON(ajaxurl,{action:'mdqtdir'},function(json){
-    mdqtdir = unescape(json);  
+    mdqtdir = unescape(json);
     $LAB.setOptions({ AlwaysPreserveOrder:true });
     $LAB
     .script(mdqtdir+'jquery.a-tools.min.js')
-    .script(mdqtdir+'jquery.asuggest.js') 
+    .script(mdqtdir+'jquery.asuggest.js')
     .script(mdqtdir+'jquery.hoverIntent.min.js')
     .script(mdqtdir+'taboverride.js')
     .script(mdqtdir+'jquery.tipsy.js')
-    .script(mdqtdir+'textchange.jquery.js').wait(function() { 
+    .script(mdqtdir+'textchange.jquery.js').wait(function() {
       jQuery('#wp-content-editor-container').prepend(jQuery('<div id="ed_toolbar" style="display:none"/>').append(jQuery('<div id="ed_button_container" />')));
       jQuery.getJSON(ajaxurl,{action:'mdqt_options'},function(json){
         jQuery('#content').mdqt_quicktags(json);
@@ -1254,7 +1275,7 @@ function edToolbar() {
       });
     });
   });
-}  
+}
 
 function edInsertContent(el,text) {
   jQuery(document.getElementById("content")).data('mdqt.quicktags').$el.insertContent(document.getElementById("content"),text);

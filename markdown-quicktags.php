@@ -22,7 +22,7 @@ License: GPLv2
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -44,7 +44,7 @@ class MarkdownQuickTags {
 		$this->js_path =  $this->siteurl . "wp-content/plugins/$plugin_dir/js/";
     $this->css_path =  $this->siteurl . "wp-content/plugins/$plugin_dir/css/";
     $this->usercss = get_bloginfo('stylesheet_directory').'/mdqtstyle.css';
-    
+
 		add_action( 'admin_print_scripts', array(&$this, 'js_libs' ));
 		add_action( 'wp_ajax_markdownify', array(&$this, 'markdownify' ));
 		add_action( 'wp_ajax_mdqtdir', array(&$this, 'mdqtdir' ));
@@ -53,8 +53,18 @@ class MarkdownQuickTags {
 		add_action( 'admin_init', array(&$this, 'mdqt_admin_init' ));
     add_action( 'admin_print_styles', array(&$this, 'mdqt_admin_styles' ) );
     register_activation_hook(__FILE__, array(&$this, 'mdqt_activation_function' ));
+
+    add_filter( 'image_send_to_editor', 'new_image_send_to_editor', 21, 8 );
+
+    function new_image_send_to_editor( $html, $id, $caption, $title, $align, $url, $size, $alt ) {
+      if (get_option('mdqt_markdownimage'))
+        return "![$alt]($url \"$title\")";
+
+      return $html;
+
+    }
 	}
-	
+
   function mdqt_activation_function() {
     add_option( 'mdqt_fullscreenwidth',800 );
   	add_option( 'mdqt_fullscreenbg','rgba(25,25,25,0.9)' );
@@ -65,8 +75,9 @@ class MarkdownQuickTags {
   	add_option( 'mdqt_font','Helvetica Neue');
   	add_option( 'mdqt_tabsize',4 );
   	add_option( 'mdqt_fontsize',14);
+    add_option( 'mdqt_markdownimage', false);
   }
-  
+
   function mdqt_admin_init() {
     wp_register_style( 'mdqt_style', $this->css_path . 'mdqt_style.css', false, '0.8.1' );
     // wp_register_style( 'peppergrinder', $this->css_path . 'peppergrinder.css');
@@ -92,7 +103,7 @@ class MarkdownQuickTags {
       wp_enqueue_script('jquery');
       wp_enqueue_script('jquery-ui-core');
       wp_enqueue_script('jquery-ui-dialog');
-      
+
       wp_enqueue_script('labjs',$this->js_path.'LAB.js', array(), null, false);
       global $wp_version;
       if ((float)$wp_version >= 3.3)
@@ -101,7 +112,7 @@ class MarkdownQuickTags {
         wp_enqueue_script('mdqt',$this->js_path.'quicktags3.2.jquery.js', array(), null, false);
     }
 	}
-	
+
 	function markdownify() {
 		require_once(dirname(__FILE__).'/markdownify/markdownify_extra.php');
     if (!empty($_REQUEST['input'])) {
@@ -113,7 +124,7 @@ class MarkdownQuickTags {
       die("Empty request");
     }
 	}
-	
+
 	function markdown() {
 	  $markdowninstalled = true;
 	  $smartyinstalled = true;
@@ -143,13 +154,13 @@ class MarkdownQuickTags {
       }
     } else {
       die("Empty request");
-    }  
+    }
 	}
-	
+
 	function mdqtdir() {
 		die(json_encode($this->js_path));
 	}
-	
+
 	function getoptions()
 	{
 	  echo json_encode(array(
@@ -195,6 +206,7 @@ function register_mdqt_settings() {
 	register_setting( 'mdqt-settings-group', 'mdqt_tabsize' );
 	register_setting( 'mdqt-settings-group', 'mdqt_font' );
 	register_setting( 'mdqt-settings-group', 'mdqt_fontsize' );
+  register_setting( 'mdqt-settings-group', 'mdqt_markdownimage' );
 }
 
 function mdqt_settings_page() {
@@ -215,7 +227,7 @@ function mdqt_settings_page() {
           $('#mdqt_fullscreenbg').val("<?php echo get_option('mdqt_fullscreenbg'); ?>");
       }
     });
-    
+
     $('#mdqt_fullscreenwidth').blur(function(){
       var input = $(this).val();
       if (/^\d{3,4}$/.test(input) && input >= 100 && input <= 1900) {
@@ -230,7 +242,7 @@ function mdqt_settings_page() {
       }
       return true;
     });
-    
+
     $('#mdqt_fullscreenbgopacity').blur(function(){
       var input = $(this).val();
       if (/^\d{2,3}$/.test(input) && input >= 10 && input <= 100) {
@@ -246,9 +258,9 @@ function mdqt_settings_page() {
       return true;
     });
   });
-  function validHex(hexcolor) { 
-    var strPattern = /^#([0-9a-f]{3}){1,2}$/i; 
-    return strPattern.test(hexcolor); 
+  function validHex(hexcolor) {
+    var strPattern = /^#([0-9a-f]{3}){1,2}$/i;
+    return strPattern.test(hexcolor);
   }
 </script>
 <div class="wrap">
@@ -278,21 +290,21 @@ function mdqt_settings_page() {
         <th scope="row">Full screen editor width</th>
         <td><input type="text" id="mdqt_fullscreenwidth" name="mdqt_fullscreenwidth" value="<?php echo get_option('mdqt_fullscreenwidth'); ?>" maxlength="4" size="4" />px</td>
         </tr>
-         
+
         <tr valign="top">
         <th scope="row">Full screen editor background color</th>
         <td><div style="position:relative;float:left"><input type="text" id="mdqt_fullscreenbg" name="mdqt_fullscreenbg" value="<?php echo get_option('mdqt_fullscreenbg'); ?>" maxlength="27" size="12" />
               <div id="colorpicker" style="display:none;position:absolute;right:-200px;top:-80px;z-index:99"></div></div>
           </td>
         </tr>
-        
+
         <tr valign="top">
         <th scope="row">Full screen editor background opacity</th>
         <td>
            <input id="mdqt_fullscreenbgopacity" type="text" name="mdqt_fullscreenbgopacity" id="mdqt_fullscreenbgopacity" value="<?php echo get_option('mdqt_fullscreenbgopacity'); ?>" maxlength="3" size="3">%
         </td>
         </tr>
-        
+
         <tr valign="top">
         <th scope="row">Tab size</th>
         <td>
@@ -304,12 +316,12 @@ function mdqt_settings_page() {
             </select> spaces
         </td>
         </tr>
-        
+
         <tr valign="top">
         <th scope="row">Use SmartyPants for Preview/Render?</th>
         <td><input type="checkbox" name="mdqt_usesmarty" value="1" <?php checked(get_option('mdqt_usesmarty'), 1); ?> /></td>
         </tr>
-        
+
         <tr valign="top">
         <th scope="row">Show Tooltips?</th>
         <td><input type="checkbox" name="mdqt_showtooltips" value="1" <?php checked(get_option('mdqt_showtooltips'), 1); ?> /></td>
@@ -319,7 +331,12 @@ function mdqt_settings_page() {
         <th scope="row">Show "lookup" button?</th>
         <td><input type="checkbox" name="mdqt_showlookup" value="1" <?php checked(get_option('mdqt_showlookup'), 1); ?> /></td>
         </tr>
-        
+
+        <tr valign="top">
+        <th scope="row">Insert image urls as Markdown?</th>
+        <td><input type="checkbox" name="mdqt_markdownimage" value="1" <?php checked(get_option('mdqt_markdownimage'), 1); ?> /></td>
+        </tr>
+
         <tr valign="top">
         <th scope="row">Editor font</th>
         <td><select name="mdqt_font" id="mdqt_font" size="1">
@@ -334,7 +351,7 @@ function mdqt_settings_page() {
           <option value="Trykker"<?php selected( get_option('mdqt_font'), 'Trykker' ); ?>>Trykker (Google Fonts)</option>
         </select></td>
         </tr>
-        
+
         <tr valign="top">
         <th scope="row">Editor font size</th>
         <td>
@@ -372,7 +389,7 @@ function mdqt_settings_page() {
         'font-size':$('#mdqt_fontsize').val()+'px'
       });
     }
-    $('#mdqt_font,#mdqt_fontsize,#mdqt_theme').live('change',function(){updatePreview();});
+    $('#mdqt_font,#mdqt_fontsize,#mdqt_theme').on('change',updatePreview);
     updatePreview();
   })(jQuery);
 </script>
