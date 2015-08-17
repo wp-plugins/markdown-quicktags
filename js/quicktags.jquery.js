@@ -1,5 +1,12 @@
 var edCanvas;
 (function($){
+
+    String.prototype.regex_escape = function() {
+        if (new RegExp(/([[\]\/\\])/g).test(this) === false) {
+          return String(this).replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
+        }
+        return this;
+    }
     if(!$.mdqt){
         $.mdqt = new Object();
     }
@@ -35,6 +42,16 @@ var edCanvas;
             this.title = g;
             this.open = d;
         }
+
+        function getEdButtonById(id) {
+            for (b in edButtons) {
+                if (edButtons[e].id === id) {
+                    return edButtons[e];
+                }
+            }
+            return false;
+        }
+
         function zeroise(b, a) {
             var c = b.toString();
             if (b < 0) {
@@ -77,9 +94,11 @@ var edCanvas;
                   $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edMakeList(document.getElementById(\'content\'), ' + a + ', \'' + b.id.replace(/ed_(.)l/,"$1") + '\','+tabsize+');" value="' + b.display + '" />');
                 } else if (b.id == "ed_pasteref") {
                   $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edPasteRefs(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
+                } else if (b.id == "ed_block") {
+                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edBlockQuote(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
                 } else {
-                $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertTag(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '"  />');
-              }
+                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertTag(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '"  />');
+                }
             }
         }
 
@@ -282,6 +301,7 @@ var edCanvas;
               }
             }
           });
+          $('#content').on('select', updateBasedOnSelection);
           base.$el.bindKeys();
           base.$el.takeSnapshot(base.$el.val(),1);
           $('#mdqt_loader').fadeOut('fast');
@@ -558,9 +578,9 @@ var edCanvas;
       if (el.selectionStart || el.selectionStart === 0) {
           a = el.selectionStart;
           b = el.selectionEnd;
-          if (b != a) {
+          // if (b != a) {
               return {start:a, end:b};
-          }
+          // }
       } else if (document.selection) {
           el.focus();
           d = document.selection.createRange();
@@ -769,7 +789,13 @@ var edCanvas;
             d.focus();
             var e = document.selection.createRange();
             if (e.text.length > 0) {
-                e.text = edButtons[c].tagStart + e.text + edButtons[c].tagEnd;
+                if ($('#' + edButtons[c].id).hasClass('clear_'+edButtons[c].id)) {
+                    var tagRE = '^' + edButtons[c].tagStart.regex_escape() + '(.*?)' + edButtons[c].tagEnd.regex_escape() + '$';
+                    e.text = e.text.replace(RegExp(tagRE), '');
+                    $('#' + edButtons[c].id).removeClass('clear_'+edButtons[c].id);
+                } else {
+                    e.text = edButtons[c].tagStart + e.text + edButtons[c].tagEnd;
+                }
             } else {
                 if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
                     e.text = edButtons[c].tagStart;
@@ -787,8 +813,20 @@ var edCanvas;
                 g = a,
                 f = d.scrollTop;
                 if (b != a) {
-                    d.value = d.value.substring(0, b) + edButtons[c].tagStart + d.value.substring(b, a) + edButtons[c].tagEnd + d.value.substring(a, d.value.length);
-                    g += edButtons[c].tagStart.length + edButtons[c].tagEnd.length;
+                    if ($('#' + edButtons[c].id).hasClass('clear_'+edButtons[c].id)) {
+                        var tagRE = '^' + edButtons[c].tagStart.regex_escape() + '(.*?)' + edButtons[c].tagEnd.regex_escape() + '$',
+                            newText = d.value.substring(b, a).replace(RegExp(tagRE), '$1');
+                        d.value = d.value.substring(0, b) + newText + d.value.substring(a, d.value.length);
+                        d.focus();
+                        d.selectionStart = b;
+                        d.selectionEnd = b + newText.length;
+                        d.scrollTop = f;
+                        $('#' + edButtons[c].id).removeClass('clear_'+edButtons[c].id);
+                        return;
+                    } else {
+                        d.value = d.value.substring(0, b) + edButtons[c].tagStart + d.value.substring(b, a) + edButtons[c].tagEnd + d.value.substring(a, d.value.length);
+                        g += edButtons[c].tagStart.length + edButtons[c].tagEnd.length;
+                    }
                 } else {
                     if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
                         d.value = d.value.substring(0, b) + edButtons[c].tagStart + d.value.substring(a, d.value.length);
@@ -801,7 +839,7 @@ var edCanvas;
                     }
                 }
                 d.focus();
-                d.selectionStart = g;
+                d.selectionStart = b;
                 d.selectionEnd = g;
                 d.scrollTop = f;
             } else {
@@ -816,6 +854,7 @@ var edCanvas;
             }
         }
     };
+
     $.fn.insertContent = function(d, c) {
         var e,
         b,
@@ -1097,6 +1136,46 @@ var edCanvas;
       }
       return lines.join("\n");
     }
+    function process_quote(text) {
+      var li = '> ',
+        lines = text.split('\n'),
+        l,
+        unquote = false,
+        inquote = false;
+
+        for (l in lines) {
+            if (/^> /.test(lines[l])) {
+                unquote = true;
+            }
+        }
+
+      for (l in lines) {
+        if (unquote) {
+            lines[l] = lines[l].replace(/^> /,'');
+            while (/^(\s*)> /.test(lines[l])) {
+                lines[l] = lines[l].replace(/^(\s*)> /,'$1\t');
+            }
+        } else {
+            if (!inquote && /^\s*$/.test(lines[l])) {
+                continue;
+            }
+            inquote = true;
+            lines[l] = '> ' + lines[l];
+            while (/^((?:> )*)( {4}|\t)/.test(lines[l])) {
+              lines[l] = lines[l].replace(/^((?:> )*)( {4}|\t)/, '$1' + li);
+            }
+        }
+      }
+
+      var i;
+      for (i = lines.length; i > 0; i--) {
+        if (/^>\s*$/.test(lines[i])) {
+            lines[i] = '';
+        }
+      }
+
+      return lines.join("\n");
+    }
     function selectToBeginningOfLine(el,start,end) {
       while (start > 0) {
         prevchar = el.val().substring(start,start - 1);
@@ -1106,6 +1185,71 @@ var edCanvas;
       }
       mdqt_setSelection(el.get(0),start,end);
       return {start:start,end:end};
+    }
+    $.fn.edBlockQuote = function(d, c, type) {
+      var origquotesel = getSelectionCoord(d), newend = origquotesel.end;
+      quotesel = selectToBeginningOfLine($(d),origquotesel.start,origquotesel.end);
+      if (document.selection && document.selection !== 'undefined') {
+          d.focus();
+          var e = document.selection.createRange();
+          if (e.text.length > 0) {
+              e.text = process_quote(e.text,type);
+          } else {
+              if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
+                  e.text = edButtons[c].tagStart;
+                  edAddTag(c);
+              } else {
+                  e.text = edButtons[c].tagEnd;
+                  edRemoveTag(c);
+              }
+          }
+          // d.focus();
+      } else {
+          if (d.selectionStart || d.selectionStart == "0") {
+              var b = d.selectionStart,
+                  a = d.selectionEnd,
+                  g = b,
+                  f = d.scrollTop;
+              if (b != a) {
+                  var newquote = process_quote(d.value.substring(b, a));
+                  newend = b + newquote.length;
+                  d.value = d.value.substring(0, b)+ newquote + d.value.substring(a, d.value.length);
+                  g += edButtons[c].tagStart.length + edButtons[c].tagEnd.length;
+              } else {
+                  console.log('b != a',b,a,g,f);
+                  caret = $(d).getCaret();
+                  if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
+                      d.value = d.value.substring(0, b) + edButtons[c].tagStart + d.value.substring(a, d.value.length);
+                      edAddTag(c);
+                      g = b + edButtons[c].tagStart.length;
+                  } else {
+                      d.value = d.value.substring(0, b) + edButtons[c].tagEnd + d.value.substring(a, d.value.length);
+                      edRemoveTag(c);
+                      g = b + edButtons[c].tagEnd.length;
+                  }
+                  setCaret(d,caret + edButtons[c].tagStart.length);
+                  return false;
+              }
+              // d.focus();
+              // d.selectionStart = g;
+              // d.selectionEnd = g;
+              d.scrollTop = f;
+          } else {
+              caret = $(this).getCaret();
+              if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
+                  d.value += edButtons[c].tagStart;
+                  edAddTag(c);
+              } else {
+                  d.value += edButtons[c].tagEnd;
+                  edRemoveTag(c);
+              }
+              d.focus();
+              setCaret(d,caret + edButtons[c].tagStart.length);
+          }
+      }
+      // d.focus();
+      mdqt_setSelection(d,origquotesel.start,newend);
+      return false;
     }
     $.fn.edMakeList = function(d,c, type) {
         var listsel = getSelectionCoord(d), newend = listsel.end;
@@ -1171,9 +1315,67 @@ var edCanvas;
         mdqt_setSelection(d,listsel.start,newend);
         return false;
     };
+
+    function updateBasedOnSelection(e) {
+
+        var el = e.target,
+            start, end,
+            text = el.value,
+            addButtons = [],
+            removeButtons = [];
+
+        if (document.selection) {
+            var sel = document.selection.createRange();
+
+            start = sel.start;
+            end = sel.end;
+        } else {
+            start = el.selectionStart;
+            end = el.selectionEnd;
+        }
+
+        var selText = text.substring( start, end ),
+        preText = text.substring(start - 4, start),
+        endText = text.substring(end, end + 4);
+
+        selText = selText.replace(/(^[*_]+|[*_]+$)/g, function(m) {
+            return m.replace(/_/g, '*');
+        });
+
+        if (/^`.*`$/.test(selText)) {
+            addButtons.push('ed_code');
+        } else {
+            removeButtons.push('ed_code');
+        }
+
+        if (/^(\*{3})[^*]*\1$/.test(selText)) {
+            addButtons = addButtons.concat(['ed_em', 'ed_strong']);
+        } else {
+            if (/^(\*)[^*]*\1$/.test(selText)) {
+                addButtons.push('ed_em');
+            } else {
+                removeButtons.push('ed_em');
+            }
+            if (/^(\*{2})[^*]*\1$/.test(selText)) {
+                addButtons.push('ed_strong');
+            } else {
+                removeButtons.push('ed_strong');
+            }
+        }
+
+        addButtons.forEach(function (button) {
+            $('#' + button).addClass('clear clear_' + button);
+        });
+
+        removeButtons.forEach(function (button) {
+           $('#' + button).removeClass('clear clear_' + button);
+        });
+    }
+    jQuery('#content').off('select').on('select', updateBasedOnSelection);
+
     var uniquenames = new Array();
     function contains(a, e) {
-      for(j=0;j<a.length;j++) {
+      for (j=0;j<a.length;j++) {
         if(a[j]==e) {
           return true;
         }

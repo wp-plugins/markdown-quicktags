@@ -3,7 +3,7 @@ Tags: markdown, editor, quicktags
 Requires at least: 3.0
 Contributors: ttscoff
 Tested up to: 4.2.4
-Stable tag: 0.9.2
+Stable tag: 0.9.3
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
 Replace the WordPress HTML editor with a Markdown one. Auto-pairing, wrapping, preview/render, customizable editor fonts and more.

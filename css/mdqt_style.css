@@ -335,6 +335,9 @@ color: rgba(46, 46, 45, 1);
   color:white !important;
   text-shadow:none !important;
 }
+.ed_button.clear {
+  color: red!important;
+}
 #ed_toolbar a#helpbutton {
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;
