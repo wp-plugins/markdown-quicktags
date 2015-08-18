@@ -3,7 +3,7 @@ Tags: markdown, editor, quicktags
 Requires at least: 4.0
 Contributors: ttscoff
 Tested up to: 4.2.4
-Stable tag: 0.9.4
+Stable tag: 0.9.5
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
 Replace the WordPress HTML editor with a Markdown one. Auto-pairing, wrapping, preview/render, customizable editor fonts and more.
@@ -160,6 +160,11 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 
 == Changelog ==
 
+= 0.9.5 =
+* Headline button (H) cycles header levels for current line
+* If line is selected to beginning and # is pressed, headlines cycle
+* If ctrl-# (ctrl-shift-3) is pressed, cycle headers regardless of selection
+
 = 0.9.4 =
 * Fix method of locating wp-content
 
@@ -230,6 +235,11 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 * Initial Release
 
 == Upgrade Notice ==
+
+= 0.9.5 =
+* Headline button (H) cycles header levels for current line
+* If line is selected to beginning and # is pressed, headlines cycle
+* If ctrl-# (ctrl-shift-3) is pressed, cycle headers regardless of selection
 
 = 0.9.4 =
 * Fixes method of locating wp-content

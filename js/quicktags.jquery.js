@@ -69,6 +69,7 @@ var edCanvas;
         edButtons[edButtons.length] = new edButton("ed_pasteref", "&darr;]:", "[", "]: ", "p","Transform pasted urls into references");
         edButtons[edButtons.length] = new edButton("ed_reflink", "][ ]", "[", "][]", "r","Insert Reference link");
         edButtons[edButtons.length] = new edButton("ed_link", "]( )", "[", "]()", "l","Insert Inline link");
+        edButtons[edButtons.length] = new edButton("ed_hed", "H", "#", "", "h","Headline Level", -1);
         edButtons[edButtons.length] = new edButton("ed_strong", "b", "**", "**", "b","Bold/Strong");
         edButtons[edButtons.length] = new edButton("ed_em", "i", "*", "*", "i","Italics/Em");
         edButtons[edButtons.length] = new edButton("ed_block", "&ldquo;", "> ", "", "q","Block Quote");
@@ -81,21 +82,23 @@ var edCanvas;
         edButtons[edButtons.length] = new edButton("ed_code", "</>", "`", "`", "c", "Insert a code span");
         edButtons[edButtons.length] = new edButton("ed_more", "more", "<!--more-->", "", "t","WordPress page break", -1);
         function edShowButton(b, a) {
-            if (b.id == "ed_img") {
+            if (b.id === "ed_img") {
                 $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertImage(document.getElementById(\'content\'));" value="' + b.display + '" />');
             } else {
-                if (b.id == "ed_link") {
+                if (b.id === "ed_link") {
                   $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertLink(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
-                } else if (b.id == "ed_reflink") {
+                } else if (b.id === "ed_reflink") {
                   $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertRefLink(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
-                } else if (b.id == "ed_ref") {
+                } else if (b.id === "ed_ref") {
                   $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertRef(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
-                } else if (b.id == "ed_ul" || b.id == "ed_ol") {
+                } else if (b.id === "ed_ul" || b.id === "ed_ol") {
                   $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edMakeList(document.getElementById(\'content\'), ' + a + ', \'' + b.id.replace(/ed_(.)l/,"$1") + '\','+tabsize+');" value="' + b.display + '" />');
-                } else if (b.id == "ed_pasteref") {
+                } else if (b.id === "ed_pasteref") {
                   $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edPasteRefs(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
-                } else if (b.id == "ed_block") {
+                } else if (b.id === "ed_block") {
                   $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edBlockQuote(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
+                } else if (b.id === 'ed_hed') {
+                  $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edHead(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '" />');
                 } else {
                   $('#ed_button_container').append('<input type="button" title="' + b.title + '" id="' + b.id + '" accesskey="' + b.access + '" class="ed_button" onclick="jQuery(this).edInsertTag(document.getElementById(\'content\'), ' + a + ');" value="' + b.display + '"  />');
                 }
@@ -145,15 +148,18 @@ var edCanvas;
               },"json");
             }
             return false;
-          })).append($('<a href="#" id="redobutton">Redo</a>').click(function(e){
-            e.preventDefault();
-            base.$el.undoForward();
-            return false;
-          })).append($('<a href="#" id="undobutton">Undo</a>').click(function(e){
-            e.preventDefault();
-            base.$el.undoBack();
-            return false;
-          })).appendTo($('div.postarea'));
+          })) // .append($('<a href="#" id="redobutton">Redo</a>').click(function(e){
+          //   e.preventDefault();
+          //   base.$el.undoForward();
+          //   return false;
+          // })).append($('<a href="#" id="undobutton">Undo</a>').click(function(e){
+          //   e.preventDefault();
+          //   base.$el.undoBack();
+          //   return false;
+          // }))
+          .appendTo($('div.postarea'));
+
+          var $extraButtons = $('<div class=extras>');
 
           $('<a id="helpbutton" href="#" title="Markdown Reference">?</a>').click(function(e) {
             $('div.postarea').append(helptext);
@@ -176,7 +182,7 @@ var edCanvas;
                 $('#markdownref').remove();
               }
             });
-          }).appendTo($('#ed_button_container'));
+          }).appendTo($extraButtons);
 
           $('<input type="button" id="previewbutton" title="Preview"/>').click(function(e){
             e.preventDefault();
@@ -214,7 +220,7 @@ var edCanvas;
               base.$el.fadeIn();
             }
             return false;
-          }).appendTo($('#ed_button_container'));
+          }).appendTo($extraButtons);
 
           $('<input type="button" id="fullscreenbutton" title="Full Screen Editor"/>').click(function(e){
             e.preventDefault();
@@ -261,7 +267,9 @@ var edCanvas;
               // $('#content,#preview').css({'height':'auto'});
             }
             return false;
-          }).appendTo($('#ed_button_container'));
+          }).appendTo($extraButtons);
+
+          $extraButtons.appendTo('#ed_button_container');
 
           if (options.showlookup)
             $('#ed_button_container').append('<input type="button" id="ed_spell" class="ed_button" onclick="edSpell(document.getElementById("content"));" title="' + 'Dictionary lookup' + '" value="' + 'lookup' + '" />');
@@ -337,6 +345,7 @@ var edCanvas;
               undoing = false;
               snapshotsFwd = [];
             }
+
             var code = (ev.keyCode ? ev.keyCode : ev.which),
             caret = base.$el.getCaret(),
             completing = false,
@@ -493,11 +502,29 @@ var edCanvas;
                   return true;
                 }
                 break;
+              case 51: // 3/#
+                if (ev.shiftKey && (ev.ctrlKey || mdqt_getSelection(base.el))) {
+                  var coords = getSelectionCoord(base.el),
+                      prevchar = base.$el.val().substring(coords.start,coords.start - 1);
+
+                  if (!/\n/.test(prevchar) && !ev.ctrlKey) {
+                    return true;
+                  }
+
+                  ev.preventDefault();
+
+                  base.$el.edHead(base.el);
+
+                  return false;
+                }
+                return true;
+                break;
               case 13: // enter
-                var grafs = base.$el.val().split("\n");
-                var graf;
-                var total = 0;
-                var scrollpos = base.el.scrollTop;
+                var grafs = base.$el.val().split("\n"),
+                    graf,
+                    total = 0,
+                    scrollpos = base.el.scrollTop;
+
                 if (/\n/.test(prevchar)) {
                   // ev.preventDefault();
                   // base.$el.insertContent(base.el,"\n");
@@ -633,13 +660,16 @@ var edCanvas;
         return 0;
     };
     $.fn.getSelorCaret = function(el){
+      if (!el || typeof el === 'undefined') {
+        el = this;
+      }
       var coords = getSelectionCoord(el);
       if (coords && typeof coords !== 'object') {
           d = document.selection.createRange();
           if (d.text.length > 0) {
             return d.text;
           } else {
-            return $(this).getCaret();
+            return $(el).getCaret();
           }
       } else {
         if (coords.start !== coords.end) {
@@ -784,6 +814,39 @@ var edCanvas;
             window.open("http://dictionary.reference.com/browse/" + escape(e));
         }
     }
+
+    $.fn.edHead = function(d) {
+      var el = d,
+          $el = $(d),
+          coords = getSelectionCoord(el),
+          newText,
+          scrollpos = el.scrollTop,
+          newCoords = selectToBeginningOfLine($el, coords.start, coords.end),
+          text = mdqt_getSelection(el);
+
+
+      if (/^#{6}/.test(text)) {
+        newText = text.replace(/^#+ */,'');
+      } else if (/^#+/.test(text)) {
+        newText = text.replace(/^(#+) */,'$1# ');
+      } else {
+        newText = '# ' + text.replace(/^ */,'');
+      }
+
+      var contents = $el.val(),
+        before = contents.substring(0,newCoords.start),
+        after = contents.substring(newCoords.end,contents.length);
+
+      $el.val(before + newText + after);
+      var diff = newText.length - text.length;
+      if (coords.start !== coords.end) {
+        mdqt_setSelection(el, coords.start, coords.end + diff);
+      } else {
+        setCaret(el, coords.start + diff);
+      }
+      el.scrollTop = scrollpos;
+    }
+
     $.fn.edInsertTag = function(d, c) {
         if (document.selection) {
             d.focus();
@@ -1216,7 +1279,6 @@ var edCanvas;
                   d.value = d.value.substring(0, b)+ newquote + d.value.substring(a, d.value.length);
                   g += edButtons[c].tagStart.length + edButtons[c].tagEnd.length;
               } else {
-                  console.log('b != a',b,a,g,f);
                   caret = $(d).getCaret();
                   if (!edCheckOpenTags(c) || edButtons[c].tagEnd === "") {
                       d.value = d.value.substring(0, b) + edButtons[c].tagStart + d.value.substring(a, d.value.length);

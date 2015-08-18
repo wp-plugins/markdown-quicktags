@@ -171,6 +171,9 @@ div.postarea {
   border-bottom:solid 1px #aaa;
   background: rgba(244, 244, 242, 1);
 }
+#ed_toolbar .extras {
+  float: right;
+}
 .ui-dialog .ui-dialog-titlebar {
   float:none;
   font-family:'Helvetica Neue',Helvetica,Arial,Verdana,sans-serif !important;

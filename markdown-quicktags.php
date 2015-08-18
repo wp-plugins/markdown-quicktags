@@ -3,7 +3,7 @@
 Plugin Name: Markdown QuickTags
 Plugin URI: http://brettterpstra.com/code/markdown-quicktags
 Description: Replaces the WordPress QuickTags with Markdown-compatible ones
-Version: 0.9.4
+Version: 0.9.5
 Author: Brett Terpstra
 Author URI: http://brettterpstra.com
 License: GPLv2
@@ -32,25 +32,25 @@ License: GPLv2
 $mdQuickTags = new MarkdownQuickTags();
 
 class MarkdownQuickTags {
-	function trailingslashit($string) {
+  function trailingslashit($string) {
       if ( '/' != substr($string, -1)) {
           $string .= '/';
       }
       return $string;
   }
-	function MarkdownQuickTags() {
+  function MarkdownQuickTags() {
     $plugin_dir = plugin_dir_url( __FILE__ );
     $this->siteurl = $this->trailingslashit(get_option('siteurl'));
     $this->js_path =  $plugin_dir . "/js/";
     $this->css_path =  $plugin_dir . " /css/";
     $this->usercss = get_bloginfo('stylesheet_directory').'/mdqtstyle.css';
 
-		add_action( 'admin_print_scripts', array(&$this, 'js_libs' ));
-		add_action( 'wp_ajax_markdownify', array(&$this, 'markdownify' ));
-		add_action( 'wp_ajax_mdqtdir', array(&$this, 'mdqtdir' ));
-		add_action( 'wp_ajax_markdown', array(&$this, 'markdown' ));
-		add_action( 'wp_ajax_mdqt_options', array(&$this, 'getoptions' ));
-		add_action( 'admin_init', array(&$this, 'mdqt_admin_init' ));
+    add_action( 'admin_print_scripts', array(&$this, 'js_libs' ));
+    add_action( 'wp_ajax_markdownify', array(&$this, 'markdownify' ));
+    add_action( 'wp_ajax_mdqtdir', array(&$this, 'mdqtdir' ));
+    add_action( 'wp_ajax_markdown', array(&$this, 'markdown' ));
+    add_action( 'wp_ajax_mdqt_options', array(&$this, 'getoptions' ));
+    add_action( 'admin_init', array(&$this, 'mdqt_admin_init' ));
     add_action( 'admin_print_styles', array(&$this, 'mdqt_admin_styles' ) );
     register_activation_hook(__FILE__, array(&$this, 'mdqt_activation_function' ));
 
@@ -63,18 +63,18 @@ class MarkdownQuickTags {
       return $html;
 
     }
-	}
+  }
 
   function mdqt_activation_function() {
     add_option( 'mdqt_fullscreenwidth',800 );
-  	add_option( 'mdqt_fullscreenbg','rgba(25,25,25,0.9)' );
-  	add_option( 'mdqt_fullscreenbgopacity','85' );
-  	add_option( 'mdqt_usesmarty',true );
-  	add_option( 'mdqt_showtooltips',true );
-  	add_option( 'mdqt_showlookup',false );
-  	add_option( 'mdqt_font','Helvetica Neue');
-  	add_option( 'mdqt_tabsize',4 );
-  	add_option( 'mdqt_fontsize',14);
+    add_option( 'mdqt_fullscreenbg','rgba(25,25,25,0.9)' );
+    add_option( 'mdqt_fullscreenbgopacity','85' );
+    add_option( 'mdqt_usesmarty',true );
+    add_option( 'mdqt_showtooltips',true );
+    add_option( 'mdqt_showlookup',false );
+    add_option( 'mdqt_font','Helvetica Neue');
+    add_option( 'mdqt_tabsize',4 );
+    add_option( 'mdqt_fontsize',14);
     add_option( 'mdqt_markdownimage', false);
   }
 
@@ -95,11 +95,11 @@ class MarkdownQuickTags {
   }
 
 
-	function js_libs() {
-		global $pagenow, $typenow;
+  function js_libs() {
+    global $pagenow, $typenow;
     if (is_admin() && ($pagenow=='post-new.php' || $pagenow=='post.php')) {
 
-		  wp_deregister_script('quicktags');
+      wp_deregister_script('quicktags');
       wp_enqueue_script('jquery');
       wp_enqueue_script('jquery-ui-core');
       wp_enqueue_script('jquery-ui-dialog');
@@ -108,42 +108,42 @@ class MarkdownQuickTags {
       global $wp_version;
       wp_enqueue_script('mdqt',$this->js_path.'quicktags.jquery.js', array('jquery'), null, false);
     }
-	}
+  }
 
-	function markdownify() {
-		require_once(dirname(__FILE__).'/markdownify/markdownify_extra.php');
+  function markdownify() {
+    require_once(dirname(__FILE__).'/markdownify/markdownify_extra.php');
     if (!empty($_REQUEST['input'])) {
       $md = new Markdownify_Extra(true, MDFY_BODYWIDTH, true);
-  		$input = stripslashes($_REQUEST['input']);
-  		$output['markdown'] = $md->parseString($input);
+      $input = stripslashes($_REQUEST['input']);
+      $output['markdown'] = $md->parseString($input);
       die(json_encode($output));
     } else {
       die("Empty request");
     }
-	}
+  }
 
-	function markdown() {
-	  $markdowninstalled = true;
-	  $smartyinstalled = true;
-	  if (!function_exists('Markdown') && is_admin()) {
-	    require_once(dirname(__FILE__)."/php/markdown.php");
-	    $markdowninstalled = false;
-	  }
-	  if (!function_exists('SmartyPants') && is_admin() && get_option('mdqt_usesmarty') == true) {
-	    require_once(dirname(__FILE__)."/php/smartypants.php");
-	    $smartyinstalled = false;
-	  }
-	  if (!empty($_REQUEST['input'])) {
-  	  $input = stripslashes($_REQUEST['input']);
+  function markdown() {
+    $markdowninstalled = true;
+    $smartyinstalled = true;
+    if (!function_exists('Markdown') && is_admin()) {
+      require_once(dirname(__FILE__)."/php/markdown.php");
+      $markdowninstalled = false;
+    }
+    if (!function_exists('SmartyPants') && is_admin() && get_option('mdqt_usesmarty') == true) {
+      require_once(dirname(__FILE__)."/php/smartypants.php");
+      $smartyinstalled = false;
+    }
+    if (!empty($_REQUEST['input'])) {
+      $input = stripslashes($_REQUEST['input']);
 
-  	  if ($_REQUEST['type'] == 'preview') {
-    	  if ($markdowninstalled) {
-    	    $output['html'] = apply_filters('the_content', $input);
-    	  } else {
-    	    $output['html'] = apply_filters('the_content',Markdown($input));
-    	  }
-    	  if (get_option('mdqt_usesmarty') == true)
-    	    $output['html'] = SmartyPants($output['html']);
+      if ($_REQUEST['type'] == 'preview') {
+        if ($markdowninstalled) {
+          $output['html'] = apply_filters('the_content', $input);
+        } else {
+          $output['html'] = apply_filters('the_content',Markdown($input));
+        }
+        if (get_option('mdqt_usesmarty') == true)
+          $output['html'] = SmartyPants($output['html']);
         die(json_encode($output));
       } else {
         $output['html'] = Markdown($input);
@@ -152,32 +152,32 @@ class MarkdownQuickTags {
     } else {
       die("Empty request");
     }
-	}
+  }
 
-	function mdqtdir() {
-		die(json_encode($this->js_path));
-	}
+  function mdqtdir() {
+    die(json_encode($this->js_path));
+  }
 
-	function getoptions()
-	{
-	  echo json_encode(array(
-	    'fullscreenwidth' => get_option('mdqt_fullscreenwidth'),
-	    'fullscreenbg' => get_option('mdqt_fullscreenbg'),
-	    'fullscreenbgopacity' => (get_option('mdqt_fullscreenbgopacity') / 100),
-	    'showlookup' => get_option('mdqt_showlookup'),
-	    'showtooltips' => get_option('mdqt_showtooltips'),
-	    'tabsize' => get_option('mdqt_tabsize'),
-	    'font' => get_option('mdqt_font'),
-	    'fontsize' => get_option('mdqt_fontsize')
-	  ));
-	  die;
-	}
+  function getoptions()
+  {
+    echo json_encode(array(
+      'fullscreenwidth' => get_option('mdqt_fullscreenwidth'),
+      'fullscreenbg' => get_option('mdqt_fullscreenbg'),
+      'fullscreenbgopacity' => (get_option('mdqt_fullscreenbgopacity') / 100),
+      'showlookup' => get_option('mdqt_showlookup'),
+      'showtooltips' => get_option('mdqt_showtooltips'),
+      'tabsize' => get_option('mdqt_tabsize'),
+      'font' => get_option('mdqt_font'),
+      'fontsize' => get_option('mdqt_fontsize')
+    ));
+    die;
+  }
 }
 // create custom plugin settings menu
 add_action('admin_menu', 'mdqt_create_menu');
 
 function mdqt_create_menu() {
-	$hook = add_submenu_page('options-general.php','Markdown QuickTags Settings', 'Markdown QuickTags', 'administrator', __FILE__, 'mdqt_settings_page');
+  $hook = add_submenu_page('options-general.php','Markdown QuickTags Settings', 'Markdown QuickTags', 'administrator', __FILE__, 'mdqt_settings_page');
   add_action( 'admin_init', 'register_mdqt_settings' );
   add_action( 'admin_print_scripts-'.$hook, 'mdqt_options_scripts');
   add_action( 'admin_print_styles-'.$hook, 'mdqt_options_styles');
@@ -193,16 +193,16 @@ function mdqt_options_scripts() {
 
 
 function register_mdqt_settings() {
-	//register our settings
-	register_setting( 'mdqt-settings-group', 'mdqt_fullscreenwidth' );
-	register_setting( 'mdqt-settings-group', 'mdqt_fullscreenbg' );
-	register_setting( 'mdqt-settings-group', 'mdqt_fullscreenbgopacity' );
-	register_setting( 'mdqt-settings-group', 'mdqt_usesmarty' );
-	register_setting( 'mdqt-settings-group', 'mdqt_showtooltips' );
-	register_setting( 'mdqt-settings-group', 'mdqt_showlookup' );
-	register_setting( 'mdqt-settings-group', 'mdqt_tabsize' );
-	register_setting( 'mdqt-settings-group', 'mdqt_font' );
-	register_setting( 'mdqt-settings-group', 'mdqt_fontsize' );
+  //register our settings
+  register_setting( 'mdqt-settings-group', 'mdqt_fullscreenwidth' );
+  register_setting( 'mdqt-settings-group', 'mdqt_fullscreenbg' );
+  register_setting( 'mdqt-settings-group', 'mdqt_fullscreenbgopacity' );
+  register_setting( 'mdqt-settings-group', 'mdqt_usesmarty' );
+  register_setting( 'mdqt-settings-group', 'mdqt_showtooltips' );
+  register_setting( 'mdqt-settings-group', 'mdqt_showlookup' );
+  register_setting( 'mdqt-settings-group', 'mdqt_tabsize' );
+  register_setting( 'mdqt-settings-group', 'mdqt_font' );
+  register_setting( 'mdqt-settings-group', 'mdqt_fontsize' );
   register_setting( 'mdqt-settings-group', 'mdqt_markdownimage' );
 }
 
