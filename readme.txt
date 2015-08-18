@@ -1,9 +1,9 @@
 === Markdown QuickTags ===
 Tags: markdown, editor, quicktags
-Requires at least: 3.0
+Requires at least: 4.0
 Contributors: ttscoff
 Tested up to: 4.2.4
-Stable tag: 0.9.3
+Stable tag: 0.9.4
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7BQFXA7YN9EPQ
 
 Replace the WordPress HTML editor with a Markdown one. Auto-pairing, wrapping, preview/render, customizable editor fonts and more.
@@ -160,6 +160,13 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 
 == Changelog ==
 
+= 0.9.4 =
+* Fix method of locating wp-content
+
+= 0.9.3 =
+* Smarter blockquote behavior
+* Tag buttons notice when selection is already tagged, reverse effect
+
 = 0.9.2 =
 * Fixes for WP 4+
 * Style updates
@@ -223,6 +230,13 @@ Sure. You'll just need a plugin to render it to HTML on the front end. I recomme
 * Initial Release
 
 == Upgrade Notice ==
+
+= 0.9.4 =
+* Fixes method of locating wp-content
+
+= 0.9.3 =
+* Smarter blockquote behavior
+* Tag buttons notice when selection is already tagged, reverse effect
 
 = 0.9.2 =
 * Initial updates for WP 4
